@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Rapport d'Avancement - Zone Centre Phase 1 (ZEN-MOH-MAN-BEN-SKH)</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --panel:#ffffff; --accent:#1a365d; --accent-orange:#dd6b20;
+    --txt:#2d3748; --muted:#718096; --grid:#e2e8f0; --danger:#e53e3e; --success:#38a169;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--txt);
+    padding: 24px;
+  }
+  header{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    border-bottom: 3px solid var(--accent); padding-bottom:14px; margin-bottom:24px;
+    flex-wrap:wrap; gap:12px; padding-top:20px;
+  }
+  header h1{ font-size: 1.5rem; letter-spacing:0.5px; color: var(--accent); text-transform: uppercase;}
+  header h1 span{ color:var(--accent-orange);}
+  .header-subtitle{ font-weight:700; font-style:italic; font-size:0.95rem; color:var(--accent); margin-top:4px; }
+  .badge{
+    background: var(--accent-orange);
+    color:#ffffff; font-weight:700; padding:6px 16px; border-radius:4px;
+    font-size:0.85rem; text-transform: uppercase;
+  }
+  .grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap:16px; margin-bottom:28px;
+  }
+  .kpi{
+    background:var(--panel); border-radius:6px; padding:16px;
+    border:1px solid var(--grid); position:relative; overflow:hidden;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+  }
+  .kpi::before{
+    content:''; position:absolute; top:0; left:0; height:4px; width:100%;
+    background:var(--bar-color, var(--accent-orange));
+  }
+  .kpi .lab{color:var(--muted); font-size:0.75rem; text-transform:uppercase; font-weight: 700;}
+  .kpi .val{font-size:2rem; font-weight:800; margin:6px 0; color: var(--accent);}
+  .kpi .pbar{height:6px; background:var(--grid); border-radius:3px; overflow:hidden;}
+  .kpi .pfill{height:100%; background:var(--bar-color, var(--accent-orange)); transition:width .25s;}
+
+  .global{
+    background: #ffffff; border:1px solid var(--grid); border-radius:8px; padding:20px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05); margin-bottom:28px; display:flex; 
+    align-items:center; gap:24px; flex-wrap:wrap; border-left: 4px solid var(--accent);
+  }
+  .ring{position:relative; width:110px; height:110px; flex:0 0 auto;}
+  .ring svg{transform:rotate(-90deg);}
+  .ring .center{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .ring .center .num{font-size:1.6rem; font-weight:800; color: var(--accent);}
+  .ring .center .lab{font-size:0.65rem; color:var(--muted); text-transform:uppercase; font-weight: 700;}
+  .global-txt{flex:1;}
+  .global-txt h2{font-size:1.2rem; margin-bottom:6px; color: var(--accent); text-transform: uppercase;}
+  .global-txt p{color:var(--txt); line-height:1.6; font-size:0.92rem;}
+
+  section{margin-bottom:28px;}
+  section .sectionhead{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:12px; padding-bottom:6px; border-bottom:2px solid var(--grid);
+  }
+  section h2{ font-size:1.2rem; display:flex; align-items:center; gap:8px; color: var(--accent); text-transform: uppercase; }
+  section h2 .num{ color:var(--accent-orange); font-weight:800; }
+
+  .dynamic-grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:20px;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  .building-block{background:var(--panel); border:1px solid var(--grid); border-radius:6px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+  .building-title{font-size:1rem; font-weight:700; margin-bottom:12px; padding-bottom:4px; border-bottom:1px solid var(--grid); color: #2b6cb0; display:flex; justify-content:space-between; align-items:center;}
+
+  .bars{display:flex; flex-direction:column; gap:8px;}
+  .bar-row{display:grid; grid-template-columns:210px 1fr 45px; align-items:center; gap:10px;}
+  .bar-row.bar-row-qty{grid-template-columns:210px 1fr 82px;}
+  .bar-row .name{font-weight:500; font-size:0.85rem; color: #4a5568;}
+  .bar-track{height:12px; background:var(--grid); border-radius:6px; overflow:hidden;}
+  .bar-fill{height:100%; background-color: #48bb78; transition:width .25s; width:0%;}
+  .bar-row .pct{text-align:right; font-weight:700; font-size:0.85rem; color:var(--muted);}
+  .bar-row .pct .qty-sub{display:block; font-size:0.65rem; font-weight:700; color:var(--accent-orange); opacity:0.9; margin-top:1px; white-space:nowrap;}
+
+  /* Rendu compact pour impression/PDF */
+  .pdf-capture-unit { margin-bottom: 0 !important; }
+  .pdf-capture-unit section { margin-bottom: 8px !important; }
+  .pdf-capture-unit .global { margin-bottom: 10px !important; padding: 12px !important; }
+  .pdf-capture-unit .grid { margin-bottom: 10px !important; gap: 8px !important; }
+  .pdf-capture-unit .kpi { padding: 8px 10px !important; }
+  .pdf-capture-unit .building-block { padding: 10px !important; margin-bottom: 0 !important; }
+  .pdf-capture-unit .bars { gap: 4px !important; }
+  .pdf-capture-unit .bar-row { gap: 6px !important; font-size: 0.74rem !important; }
+  .pdf-capture-unit .bar-row .name { font-size: 0.74rem !important; }
+  .pdf-capture-unit .bar-row .pct { font-size: 0.74rem !important; }
+  .pdf-capture-unit .bar-track { height: 8px !important; }
+
+  .pdf-two-col-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  #photoSectionExport { display: none; }
+  .pdf-free-photo-space {
+    width: 100%;
+    min-height: 800px;
+    background: transparent;
+  }
+
+  @media(max-width:768px){ .two-col, .dynamic-grid{grid-template-columns:1fr;} .global{flex-direction:column; text-align:center;} }
+  footer{text-align:center; color:var(--muted); font-size:0.8rem; margin-top:30px; padding-top:14px; border-top:1px solid var(--grid);}
+
+  .topbar{ position:fixed; top:14px; right:14px; z-index:998; display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+  .pdf-btn { background:#dd6b20; color:#fff; border:none; padding:8px 18px; font-size:0.82rem; font-weight:700; border-radius:4px; cursor:pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .pdf-btn:hover{ background:#c05621; }
+  .pptx-btn { background:#1a365d; color:#fff; border:none; padding:8px 18px; font-size:0.82rem; font-weight:700; border-radius:4px; cursor:pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .pptx-btn:hover{ background:#0f2342; }
+  .excel-btn { background:#2e7d32; color:#fff; border:none; padding:8px 18px; font-size:0.82rem; font-weight:700; border-radius:4px; cursor:pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .excel-btn:hover{ background:#1b5e20; }
+  .save-status{ font-size:0.75rem; color:var(--muted); background:var(--panel); border:1px solid var(--grid); padding:5px 10px; border-radius:4px; display:none; }
+
+  /* Modales */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(20,26,33,0.5); display:none; align-items:center; justify-content:center; z-index:1000; padding:24px; }
+  .modal-overlay.open{ display:flex; }
+  .modal{ background:var(--panel); border-radius:8px; width:100%; max-width:650px; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 10px 25px rgba(0,0,0,0.15); overflow:hidden; }
+  .modal-head{ padding:16px 20px; border-bottom:1px solid var(--grid); display:flex; justify-content:space-between; align-items:center; }
+  .modal-body{ padding:16px 20px; overflow-y:auto; flex:1; }
+  .modal-foot{ padding:14px 20px; border-top:1px solid var(--grid); display:flex; justify-content:flex-end; gap:10px; }
+  .btn{ border:none; border-radius:4px; padding:8px 16px; font-size:0.85rem; font-weight:700; cursor:pointer; }
+  .btn.cancel{ background:var(--grid); color:var(--txt); }
+  .btn.save{ background:var(--accent-orange); color:#fff; }
+  .btn.add{ background:var(--accent); color:#fff; padding:6px 12px; font-size:0.8rem; }
+  .btn.del{ background:transparent; color:var(--danger); border:1px solid var(--danger); padding:3px 6px; font-size:0.7rem; border-radius:3px; }
+
+  .field-row{ display:grid; grid-template-columns: 2fr 1fr 50px; gap:10px; align-items:center; margin-bottom:8px; }
+  .pctwrap{ display:flex; align-items:center; gap:6px; }
+  .pctwrap input[type="number"]{ width:55px; border:1px solid var(--grid); border-radius:4px; padding:4px; text-align:right; }
+  .done-wrap{ display:flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--muted); white-space:nowrap; }
+  .done-wrap input[type="number"]{ width:70px; border:1px solid var(--grid); border-radius:4px; padding:4px; text-align:right; }
+  .computed-pct{ font-weight:700; color:var(--txt); }
+  .modal-section-label{ font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--accent-orange); font-weight:700; margin:14px 0 6px; border-bottom:1px solid var(--grid); padding-bottom:2px; }
+  .edit-btn{ background:var(--panel); border:1px solid var(--grid); color:var(--accent-orange); font-size:0.75rem; font-weight:700; padding:5px 12px; border-radius:4px; cursor:pointer; }
+
+  .qty-row{ display:grid; grid-template-columns: 2fr 90px 70px; gap:10px; align-items:center; margin-bottom:8px; }
+  .qty-row input[type="number"]{ width:100%; border:1px solid var(--grid); border-radius:4px; padding:5px 6px; text-align:right; }
+  .qty-row input[type="text"]{ width:100%; border:1px solid var(--grid); border-radius:4px; padding:5px 6px; text-align:center; }
+  .qty-row-head{ font-size:0.68rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); font-weight:700; margin-bottom:6px; }
+  .qty-note{ font-size:0.8rem; color:var(--muted); line-height:1.5; margin-bottom:14px; background:#f4f6f9; border-left:3px solid var(--accent-orange); padding:10px 12px; border-radius:4px; }
+  .weighted-tag{ font-size:0.7rem; cursor:help; opacity:0.75; }
+
+  .building-config-card{ background:#f8fafc; border:1px solid var(--grid); border-radius:6px; padding:12px; margin-bottom:12px; }
+  .building-config-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .building-config-header input{ font-weight:700; color:var(--accent); border:1px solid var(--grid); padding:4px 8px; border-radius:4px; width:70%; }
+  .task-tag-list{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .task-tag{ background:#ffffff; border:1px solid var(--grid); font-size:0.75rem; padding:3px 8px; border-radius:12px; display:inline-flex; align-items:center; gap:6px; color:#4a5568; }
+  .task-tag span.del-task{ color:var(--danger); cursor:pointer; font-weight:bold; }
+  .add-task-row{ display:flex; gap:6px; margin-top:8px; }
+  .add-task-row input{ flex:1; font-size:0.78rem; border:1px solid var(--grid); border-radius:4px; padding:4px 8px; }
+
+  /* Écran de connexion */
+  .auth-screen{ position:fixed; inset:0; background:var(--bg); z-index:3000; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .auth-box{ background:var(--panel); border:1px solid var(--grid); border-radius:8px; padding:32px; width:100%; max-width:340px; box-shadow:0 10px 25px rgba(0,0,0,0.12); text-align:center; }
+  .auth-box h2{ color:var(--accent); margin-bottom:6px; font-size:1.3rem; }
+  .auth-box p{ color:var(--muted); font-size:0.85rem; margin-bottom:20px; }
+  .auth-box input{ width:100%; padding:10px 12px; margin-bottom:10px; border:1px solid var(--grid); border-radius:4px; font-size:0.9rem; }
+  .auth-box button{ width:100%; background:var(--accent-orange); color:#fff; border:none; padding:10px; border-radius:4px; font-weight:700; cursor:pointer; font-size:0.9rem; margin-top:4px; }
+  .auth-box button:hover{ background:#c05621; }
+  .auth-box button:disabled{ opacity:0.6; cursor:not-allowed; }
+  .auth-error{ color:#e53e3e; font-size:0.8rem; margin-top:10px; min-height:1em; }
+  .auth-loading{ color:var(--muted); font-size:0.8rem; margin-top:10px; }
+  .user-badge{ font-size:0.75rem; color:var(--accent); background:var(--panel); border:1px solid var(--grid); padding:5px 10px; border-radius:4px; display:none; }
+</style>
+</head>
+<body id="pdfContentWrapper">
+
+<div class="auth-screen" id="authScreen">
+  <div class="auth-box">
+    <h2>🔒 Connexion</h2>
+    <p>Rapport d'Avancement — Zone Centre Phase 1 (ZEN-MOH-MAN-BEN-SKH)</p>
+    <input type="email" id="authEmail" placeholder="Adresse e-mail" autocomplete="username">
+    <input type="password" id="authPassword" placeholder="Mot de passe" autocomplete="current-password" onkeydown="if(event.key==='Enter'){doLogin();}">
+    <button id="authSubmitBtn" onclick="doLogin()">Se connecter</button>
+    <div class="auth-error" id="authError"></div>
+    <div class="auth-loading" id="authLoading" style="display:none;">Connexion en cours…</div>
+  </div>
+</div>
+
+<div class="topbar">
+  <span class="user-badge" id="userBadge"></span>
+  <span class="save-status" id="saveStatus">✓ Enregistré</span>
+  <button class="edit-btn" style="background:#fff; color:var(--accent);" onclick="openQtyModal()">⚖️ Paramètres — Bâtiments & Quantités</button>
+  <button class="edit-btn" style="background:#fff; color:var(--accent);" onclick="persistData()">💾 Enregistrer</button>
+  <button class="edit-btn" style="background:#fff; color:var(--accent);" onclick="doLogout()">🔓 Déconnexion</button>
+  <button class="excel-btn" id="excelBtn" onclick="exportExcel()">📊 Exporter Excel</button>
+  <button class="pptx-btn" id="pptxBtn" onclick="exportPPTX()">📊 Exporter en PowerPoint</button>
+  <button class="pdf-btn" id="pdfBtn" onclick="exportPDF()">📄 Exporter en PDF</button>
+</div>
+
+<div id="mainReportArea">
+  <header id="pdfHeader">
+    <div>
+      <h1>Rapport d'Avancement <span>· Zone Centre Phase 1 (ZEN-MOH-MAN-BEN-SKH)</span></h1>
+      <div class="header-subtitle">CR SIG Marché C507 ONCF - ALSTOM</div>
+    </div>
+    <div class="badge">Signalisation</div>
+  </header>
+
+  <div class="global" id="pdfGlobalBlock">
+    <div class="ring">
+      <svg width="110" height="110" viewBox="0 0 110 110">
+        <circle cx="55" cy="55" r="48" stroke="#e2e8f0" stroke-width="10" fill="none"/>
+        <circle id="ringFill" cx="55" cy="55" r="48" stroke="#dd6b20" stroke-width="10" fill="none"
+          stroke-dasharray="301.6" stroke-dashoffset="301.6" stroke-linecap="round"/>
+      </svg>
+      <div class="center">
+        <div class="num" id="globalPctNum">0%</div>
+        <div class="lab">Global</div>
+      </div>
+    </div>
+    <div class="global-txt">
+      <h2>Synthèse Générale</h2>
+      <p id="syntheseText">Chargement de la synthèse d'avancement par axe...</p>
+    </div>
+  </div>
+
+  <div class="grid" id="kpiGrid">
+    <div class="kpi" style="--bar-color:#ff6b35;" data-kpi="batiments"><div class="lab">1) Bâtiments</div><div class="val"><span class="kpi-pct">0</span>%</div><div class="pbar"><div class="pfill" style="width:0%"></div></div></div>
+    <div class="kpi" style="--bar-color:#2ec4b6;" data-kpi="arteres"><div class="lab">2) Artères <span class="weighted-tag" title="Moyenne pondérée par quantité">⚖️</span></div><div class="val"><span class="kpi-pct">0</span>%</div><div class="pbar"><div class="pfill" style="width:0%"></div></div></div>
+    <div class="kpi" style="--bar-color:#ffd166;" data-kpi="massifs"><div class="lab">3) Massifs <span class="weighted-tag" title="Moyenne pondérée par quantité">⚖️</span></div><div class="val"><span class="kpi-pct">0</span>%</div><div class="pbar"><div class="pfill" style="width:0%"></div></div></div>
+    <div class="kpi" style="--bar-color:#9b5de5;" data-kpi="mats"><div class="lab">4) Mâts & Pot. <span class="weighted-tag" title="Moyenne pondérée par quantité">⚖️</span></div><div class="val"><span class="kpi-pct">0</span>%</div><div class="pbar"><div class="pfill" style="width:0%"></div></div></div>
+    <div class="kpi" style="--bar-color:#f54291;" data-kpi="campagne"><div class="lab">5) Campagne</div><div class="val"><span class="kpi-pct">0</span>%</div><div class="pbar"><div class="pfill" style="width:0%"></div></div></div>
+    <div class="kpi" style="--bar-color:#4361ee;" data-kpi="poste"><div class="lab">6) Postes (Équip)</div><div class="val"><span class="kpi-pct">0</span>%</div><div class="pbar"><div class="pfill" style="width:0%"></div></div></div>
+  </div>
+
+  <section id="section1">
+    <div class="sectionhead">
+      <h2><span class="num">1.</span> Bâtiments (Génie Civil)</h2>
+      <button class="edit-btn" onclick="openModal('batiments')">✏️ Modifier</button>
+    </div>
+    <div class="dynamic-grid" id="buildings-genie-container"></div>
+  </section>
+
+  <section id="section2">
+    <div class="sectionhead">
+      <h2><span class="num">2.</span> Artères de câbles</h2>
+      <button class="edit-btn" onclick="openModal('arteres')">✏️ Modifier</button>
+    </div>
+    <div class="building-block">
+      <div class="bars" id="arteres-bars"></div>
+    </div>
+  </section>
+
+  <div class="two-col" id="section3and4">
+    <section>
+      <div class="sectionhead">
+        <h2><span class="num">3.</span> Massifs</h2>
+        <button class="edit-btn" onclick="openModal('massifs')">✏️ Modifier</button>
+      </div>
+      <div class="building-block">
+        <div class="bars" id="massifs-bars"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sectionhead">
+        <h2><span class="num">4.</span> Mâts, Potences et Portiques</h2>
+        <button class="edit-btn" onclick="openModal('mats')">✏️ Modifier</button>
+      </div>
+      <div class="building-block">
+        <div class="bars" id="mats-bars"></div>
+      </div>
+    </section>
+  </div>
+
+  <section id="section5">
+    <div class="sectionhead">
+      <h2><span class="num">5.</span> Campagne (Installations Sol)</h2>
+      <button class="edit-btn" onclick="openModal('campagne')">✏️ Modifier</button>
+    </div>
+    <div class="building-block">
+      <div class="bars" id="campagne-bars"></div>
+    </div>
+  </section>
+
+  <section id="section6">
+    <div class="sectionhead">
+      <h2><span class="num">6.</span> Postes Technique (Équipements Intérieurs)</h2>
+      <button class="edit-btn" onclick="openModal('poste')">✏️ Modifier</button>
+    </div>
+    <div class="dynamic-grid" id="buildings-poste-container"></div>
+  </section>
+
+  <footer id="pdfFooter">Rapport de suivi d'avancement — Zone Centre Phase 1 (ZEN-MOH-MAN-BEN-SKH) — CR SIG Marché C507 ONCF - ALSTOM</footer>
+</div>
+
+<div id="photoSectionExport">
+  <div style="border-bottom: 3px solid var(--accent); padding-bottom:10px; margin-bottom:20px;">
+     <h2 style="font-size:1.4rem; color:var(--accent); text-transform:uppercase;"><span style="color:var(--accent-orange);">7.</span> Photos du Chantier (Zone Centre Phase 1)</h2>
+  </div>
+  <div class="pdf-free-photo-space"></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Mise à jour de l'avancement</h3>
+      <button style="border:none; background:none; font-size:1.2rem; cursor:pointer;" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot">
+      <button class="btn cancel" onclick="closeModal()">Annuler</button>
+      <button class="btn save" onclick="saveModal()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="qtyModalOverlay">
+  <div class="modal" style="max-width:760px;">
+    <div class="modal-head">
+      <h3>⚖️ Paramètres — Bâtiments & Quantités</h3>
+      <button style="border:none; background:none; font-size:1.2rem; cursor:pointer;" onclick="closeQtyModal()">✕</button>
+    </div>
+    <div class="modal-body" id="qtyModalBody"></div>
+    <div class="modal-foot">
+      <button class="btn cancel" onclick="closeQtyModal()">Fermer</button>
+      <button class="btn save" onclick="saveQtyModal()">Sauvegarder les modifications</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAGW2JcAn7OsJYgyE-AetfN5ObiP36Nf94",
+  authDomain: "rapport-d-avancement-csp.firebaseapp.com",
+  databaseURL: "https://rapport-d-avancement-csp-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "rapport-d-avancement-csp",
+  storageBucket: "rapport-d-avancement-csp.firebasestorage.app",
+  messagingSenderId: "654914178815",
+  appId: "1:654914178815:web:39b519c510fc21fc5706ca"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+const REMOTE_PATH = "zone_centre_p1/data";
+let dbListenerAttached = false;
+
+function doLogin(){
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const errorEl = document.getElementById('authError');
+  const btn = document.getElementById('authSubmitBtn');
+  const loadingEl = document.getElementById('authLoading');
+  errorEl.textContent = '';
+  if(!email || !password){ errorEl.textContent = 'Veuillez renseigner e-mail et mot de passe.'; return; }
+  btn.disabled = true; loadingEl.style.display = 'block';
+  auth.signInWithEmailAndPassword(email, password)
+    .catch(err => {
+      if(err.code === 'auth/invalid-email'){ errorEl.textContent = "Adresse e-mail invalide."; }
+      else { errorEl.textContent = "Échec de connexion : e-mail ou mot de passe incorrect."; }
+    })
+    .finally(() => { btn.disabled = false; loadingEl.style.display = 'none'; });
+}
+
+function doLogout(){
+  if(confirm('Se déconnecter ?')) auth.signOut();
+}
+
+auth.onAuthStateChanged(function(user){
+  const authScreen = document.getElementById('authScreen');
+  const userBadge = document.getElementById('userBadge');
+  if(user){
+    authScreen.style.display = 'none';
+    userBadge.textContent = '👤 ' + user.email;
+    userBadge.style.display = 'inline';
+    attachRemoteSync();
+  } else {
+    authScreen.style.display = 'flex';
+    userBadge.style.display = 'none';
+  }
+});
+
+function attachRemoteSync(){
+  if(dbListenerAttached) return;
+  dbListenerAttached = true;
+  db.ref(REMOTE_PATH).on('value', function(snapshot){
+    const remote = snapshot.val();
+    if(remote){
+      const modalOpen = document.getElementById('modalOverlay').classList.contains('open')
+        || document.getElementById('qtyModalOverlay').classList.contains('open');
+      if(!modalOpen){
+        migrateAndApply(remote);
+        renderAll();
+      }
+    }
+  }, function(error){
+    console.error('Erreur de synchronisation Firebase :', error);
+    document.getElementById('saveStatus').textContent = '⚠ Hors-ligne (données locales)';
+    document.getElementById('saveStatus').style.display = 'inline';
+  });
+}
+
+const DEFAULT_GENIE_TASKS = [
+  "Installation et implantation", "Terrassement", "Béton de propreté", "Semelles BA",
+  "Longrines BA", "Poteaux BA", "Caniveaux et regards", "Remblaiement et compactage",
+  "Dallage armé", "Maçonnerie", "Chaînages", "Poutres et plancher haut",
+  "Étanchéité", "Enduits", "Éclairage", "Climatisation", "Nettoyage"
+];
+
+const DEFAULT_POSTE_TASKS = [
+  "Installation armoires SIG", "Installation équipements énergie", "Installation équipements télécom"
+];
+
+// Configuration initiale spécifique pour Zone Centre Phase 1
+const DATA = {
+  buildings: [
+    {
+      id: "gs_15_8",
+      name: "GS 15.8",
+      genie: DEFAULT_GENIE_TASKS.map(t => ({ name: t, pct: 0 })),
+      poste: DEFAULT_POSTE_TASKS.map(t => ({ name: t, pct: 0 }))
+    },
+    {
+      id: "gs_17",
+      name: "GS 17",
+      genie: DEFAULT_GENIE_TASKS.map(t => ({ name: t, pct: 0 })),
+      poste: DEFAULT_POSTE_TASKS.map(t => ({ name: t, pct: 0 }))
+    },
+    {
+      id: "gs_20",
+      name: "GS 20",
+      genie: DEFAULT_GENIE_TASKS.map(t => ({ name: t, pct: 0 })),
+      poste: DEFAULT_POSTE_TASKS.map(t => ({ name: t, pct: 0 }))
+    },
+    {
+      id: "gl_21_8",
+      name: "GL 21.8",
+      genie: DEFAULT_GENIE_TASKS.map(t => ({ name: t, pct: 0 })),
+      poste: DEFAULT_POSTE_TASKS.map(t => ({ name: t, pct: 0 }))
+    },
+    {
+      id: "gs_24",
+      name: "GS 24",
+      genie: DEFAULT_GENIE_TASKS.map(t => ({ name: t, pct: 0 })),
+      poste: DEFAULT_POSTE_TASKS.map(t => ({ name: t, pct: 0 }))
+    },
+    {
+      id: "gl_27",
+      name: "GL 27",
+      genie: DEFAULT_GENIE_TASKS.map(t => ({ name: t, pct: 0 })),
+      poste: DEFAULT_POSTE_TASKS.map(t => ({ name: t, pct: 0 }))
+    },
+    {
+      id: "gl_28",
+      name: "GL 28",
+      genie: DEFAULT_GENIE_TASKS.map(t => ({ name: t, pct: 0 })),
+      poste: DEFAULT_POSTE_TASKS.map(t => ({ name: t, pct: 0 }))
+    }
+  ],
+  arteres: [
+    { name:"Piquetages", pct:0, qty:1, unit:"ml" },
+    { name:"Confection des tranchées", pct:0, qty:1, unit:"ml" },
+    { name:"Déroulage des buses", pct:0, qty:1, unit:"ml" },
+    { name:"Fermeture des tranchées", pct:0, qty:1, unit:"ml" },
+    { name:"Déroulage de câble CDTE", pct:0, qty:1, unit:"ml" },
+    { name:"Déroulage de câble SIG", pct:0, qty:1, unit:"ml" },
+    { name:"Déroulage de câble Énergie", pct:0, qty:1, unit:"ml" },
+    { name:"Déroulage PHED FO", pct:0, qty:1, unit:"ml" },
+    { name:"Soufflage FO", pct:0, qty:1, unit:"ml" },
+    { name:"TSV", pct:0, qty:1, unit:"u" }
+  ],
+  massifs: [
+    { name:"Piquetages massifs", pct:0, qty:1, unit:"u" },
+    { name:"Confection massifs", pct:0, qty:1, unit:"u" },
+    { name:"Ferraillage massifs", pct:0, qty:1, unit:"u" },
+    { name:"Coulage béton massifs", pct:0, qty:1, unit:"u" }
+  ],
+  mats: [
+    { name:"Potences", pct:0, qty:1, unit:"u" },
+    { name:"Portiques", pct:0, qty:1, unit:"u" },
+    { name:"Mâts", pct:0, qty:1, unit:"u" }
+  ],
+  campagne: [
+    { name:"Pose moteurs aiguilles & contr.", pct:0 },
+    { name:"Pose et installation balises", pct:0 },
+    { name:"Pose et installation pédales", pct:0 },
+    { name:"Pose et installation signaux", pct:0 },
+    { name:"Pose et installation U71", pct:0 },
+    { name:"Pose et installation CI", pct:0 }
+  ]
+};
+
+function migrateAndApply(source){
+  if(!source) return;
+  if(source.buildings && Array.isArray(source.buildings)){
+    DATA.buildings = source.buildings;
+  }
+  if(source.arteres) DATA.arteres = source.arteres;
+  if(source.massifs) DATA.massifs = source.massifs;
+  if(source.mats) DATA.mats = source.mats;
+  if(source.campagne) DATA.campagne = source.campagne;
+}
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function avg(arr){ return arr && arr.length ? arr.reduce((s,x)=>s+(x.pct||0),0)/arr.length : 0; }
+
+function wavg(arr){
+  if(!arr || !arr.length) return 0;
+  const totalQty = arr.reduce((s,x)=> s + (parseFloat(x.qty) || 0), 0);
+  if(totalQty <= 0) return avg(arr);
+  return arr.reduce((s,x)=> s + (x.pct||0) * (parseFloat(x.qty) || 0), 0) / totalQty;
+}
+
+function renderBarRows(tasks){
+  return (tasks || []).map(row=>{
+    const hasQty = row.qty !== undefined;
+    const qtySub = hasQty ? `<span class="qty-sub">${row.done ?? 0}/${row.qty} ${esc(row.unit||'u')}</span>` : '';
+    return `
+    <div class="bar-row${hasQty ? ' bar-row-qty' : ''}">
+      <span class="name"${hasQty ? ` title="Réalisé : ${row.done ?? 0} / ${row.qty} ${esc(row.unit||'u')}"` : ''}>${esc(row.name)}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${row.pct}%"></div></div>
+      <span class="pct">${row.pct}%${qtySub}</span>
+    </div>`;
+  }).join("");
+}
+
+function updateSyntheseText(kpiBat, kpiArt, kpiMas, kpiMats, kpiCam, kpiPoste, tot){
+  const el = document.getElementById("syntheseText");
+  if(!el) return;
+
+  const bldgSummary = DATA.buildings.map(b => `${b.name} (${Math.round(avg(b.genie))}%)`).join(", ");
+  
+  let phaseStatus = "Démarrage des travaux et piquetages initiaux.";
+  if(tot >= 85) phaseStatus = "Phase finale : intégration, vérifications techniques et récolements.";
+  else if(tot >= 50) phaseStatus = "Phase active de pose des équipements et déroulage des câbles.";
+  else if(tot >= 20) phaseStatus = "Phase intermédiaire : progression du génie civil et ouverture des tranchées.";
+
+  el.innerHTML = `
+    <b>Avancement global : ${Math.round(tot)}%</b> — <i>${phaseStatus}</i><br>
+    • <b>Axe Génie Civil Bâtiments (${Math.round(kpiBat)}%) :</b> Suivi sur ${DATA.buildings.length} bâtiment(s) [${bldgSummary}].<br>
+    • <b>Axe Artères & Câblage (${Math.round(kpiArt)}%) :</b> Tranchées, pose fourreaux, tirage CDTE/SIG/Énergie et fibres optiques.<br>
+    • <b>Axe Supports & Massifs :</b> Massifs (${Math.round(kpiMas)}%) et Mâts/Potences/Portiques (${Math.round(kpiMats)}%).<br>
+    • <b>Axe Équipements & Systèmes :</b> Installations Sol Campagne (${Math.round(kpiCam)}%) et Postes Techniques Intérieurs (${Math.round(kpiPoste)}%).
+  `;
+}
+
+function renderAll(){
+  // Section 1 : Bâtiments Génie Civil
+  const gContainer = document.getElementById("buildings-genie-container");
+  if(gContainer){
+    gContainer.innerHTML = DATA.buildings.map((b)=> `
+      <div class="building-block">
+        <div class="building-title">
+          <span>${esc(b.name)}</span>
+          <span style="font-size:0.8rem; color:var(--muted);">${Math.round(avg(b.genie))}%</span>
+        </div>
+        <div class="bars">${renderBarRows(b.genie)}</div>
+      </div>
+    `).join("");
+  }
+
+  // Section 6 : Postes Techniques
+  const pContainer = document.getElementById("buildings-poste-container");
+  if(pContainer){
+    pContainer.innerHTML = DATA.buildings.map((b)=> `
+      <div class="building-block">
+        <div class="building-title">
+          <span>${esc(b.name)}</span>
+          <span style="font-size:0.8rem; color:var(--muted);">${Math.round(avg(b.poste))}%</span>
+        </div>
+        <div class="bars">${renderBarRows(b.poste)}</div>
+      </div>
+    `).join("");
+  }
+
+  // Sections Fixes
+  const artEl = document.getElementById("arteres-bars"); if(artEl) artEl.innerHTML = renderBarRows(DATA.arteres);
+  const masEl = document.getElementById("massifs-bars"); if(masEl) masEl.innerHTML = renderBarRows(DATA.massifs);
+  const matEl = document.getElementById("mats-bars"); if(matEl) matEl.innerHTML = renderBarRows(DATA.mats);
+  const camEl = document.getElementById("campagne-bars"); if(camEl) camEl.innerHTML = renderBarRows(DATA.campagne);
+
+  recalcKPIs();
+}
+
+function recalcKPIs(){
+  const kpiBat = DATA.buildings.length ? DATA.buildings.reduce((acc, b) => acc + avg(b.genie), 0) / DATA.buildings.length : 0;
+  const kpiArt = wavg(DATA.arteres);
+  const kpiMas = wavg(DATA.massifs);
+  const kpiMats = wavg(DATA.mats);
+  const kpiCam = avg(DATA.campagne);
+  const kpiPoste = DATA.buildings.length ? DATA.buildings.reduce((acc, b) => acc + avg(b.poste), 0) / DATA.buildings.length : 0;
+
+  document.querySelector('[data-kpi="batiments"] .kpi-pct').textContent = Math.round(kpiBat);
+  document.querySelector('[data-kpi="batiments"] .pfill').style.width = kpiBat + "%";
+  document.querySelector('[data-kpi="arteres"] .kpi-pct').textContent = Math.round(kpiArt);
+  document.querySelector('[data-kpi="arteres"] .pfill').style.width = kpiArt + "%";
+  document.querySelector('[data-kpi="massifs"] .kpi-pct').textContent = Math.round(kpiMas);
+  document.querySelector('[data-kpi="massifs"] .pfill').style.width = kpiMas + "%";
+  document.querySelector('[data-kpi="mats"] .kpi-pct').textContent = Math.round(kpiMats);
+  document.querySelector('[data-kpi="mats"] .pfill').style.width = kpiMats + "%";
+  document.querySelector('[data-kpi="campagne"] .kpi-pct').textContent = Math.round(kpiCam);
+  document.querySelector('[data-kpi="campagne"] .pfill').style.width = kpiCam + "%";
+  document.querySelector('[data-kpi="poste"] .kpi-pct').textContent = Math.round(kpiPoste);
+  document.querySelector('[data-kpi="poste"] .pfill').style.width = kpiPoste + "%";
+
+  const tot = (kpiBat + kpiArt + kpiMas + kpiMats + kpiCam + kpiPoste) / 6;
+  document.getElementById("globalPctNum").textContent = Math.round(tot) + "%";
+  document.getElementById("ringFill").style.strokeDashoffset = 301.6 * (1 - tot/100);
+
+  updateSyntheseText(kpiBat, kpiArt, kpiMas, kpiMats, kpiCam, kpiPoste, tot);
+}
+
+const QTY_TRACKED_KEYS = ['arteres','massifs','mats'];
+
+function openModal(key){
+  const body = document.getElementById("modalBody"); 
+  let html = "";
+  
+  if(QTY_TRACKED_KEYS.includes(key)){
+    html += `<div class="qty-note">Saisissez la <b>quantité réalisée</b>. Le % est calculé automatiquement (Réalisé ÷ Total).</div>`;
+    html += DATA[key].map((r,i)=> fieldRow(key, i, r)).join("");
+  } else if(key === 'batiments'){
+    DATA.buildings.forEach((b, bIdx) => {
+      html += `<div class="modal-section-label">🏢 ${esc(b.name)} (Génie Civil)</div>`;
+      html += (b.genie || []).map((r, i) => fieldRowBuilding(bIdx, 'genie', i, r)).join("");
+    });
+  } else if(key === 'poste'){
+    DATA.buildings.forEach((b, bIdx) => {
+      html += `<div class="modal-section-label">🏢 ${esc(b.name)} (Équipements Intérieurs)</div>`;
+      html += (b.poste || []).map((r, i) => fieldRowBuilding(bIdx, 'poste', i, r)).join("");
+    });
+  } else {
+    html += (DATA[key] || []).map((r,i)=> fieldRow(key, i, r)).join("");
+  }
+  
+  body.innerHTML = html; 
+  document.getElementById("modalOverlay").classList.add("open");
+}
+
+function fieldRowBuilding(bIdx, type, i, item){
+  return `
+    <div class="field-row" data-bidx="${bIdx}" data-type="${type}" data-i="${i}">
+      <span style="font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(item.name)}</span>
+      <input type="range" min="0" max="100" value="${item.pct}" oninput="this.parentElement.querySelector('.num-i').value=this.value">
+      <div class="pctwrap"><input type="number" class="num-i" min="0" max="100" value="${item.pct}" oninput="this.parentElement.parentElement.querySelector('input[type=range]').value=this.value">%</div>
+    </div>`;
+}
+
+function fieldRow(arr, i, item){
+  if(QTY_TRACKED_KEYS.includes(arr)){
+    const total = parseFloat(item.qty) || 0;
+    const done = item.done ?? 0;
+    const pct = total > 0 ? Math.min(100, Math.max(0, (done/total)*100)) : 0;
+    return `
+      <div class="field-row qty-tracked" data-arr="${arr}" data-i="${i}" data-total="${total}">
+        <span style="font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="Total : ${total} ${esc(item.unit||'u')}">${esc(item.name)}</span>
+        <div class="done-wrap">
+          <input type="number" class="done-i" min="0" step="any" value="${done}" oninput="updateComputedPct(this)">
+          <span class="unit-lab">/ ${total} ${esc(item.unit||'u')}</span>
+        </div>
+        <div class="pctwrap"><span class="computed-pct">${Math.round(pct)}</span>%</div>
+      </div>`;
+  }
+  return `
+    <div class="field-row" data-arr="${arr}" data-i="${i}">
+      <span style="font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(item.name)}</span>
+      <input type="range" min="0" max="100" value="${item.pct}" oninput="this.parentElement.querySelector('.num-i').value=this.value">
+      <div class="pctwrap"><input type="number" class="num-i" min="0" max="100" value="${item.pct}" oninput="this.parentElement.parentElement.querySelector('input[type=range]').value=this.value">%</div>
+    </div>`;
+}
+
+function updateComputedPct(input){
+  const row = input.closest('.field-row');
+  const total = parseFloat(row.dataset.total) || 0;
+  const done = parseFloat(input.value) || 0;
+  const pct = total > 0 ? Math.min(100, Math.max(0, (done/total)*100)) : 0;
+  row.querySelector('.computed-pct').textContent = Math.round(pct);
+}
+
+function closeModal(){ document.getElementById("modalOverlay").classList.remove("open"); }
+
+function saveModal(){
+  document.getElementById("modalBody").querySelectorAll(".field-row").forEach(row=>{
+    if(row.dataset.bidx !== undefined){
+      const bIdx = parseInt(row.dataset.bidx);
+      const type = row.dataset.type;
+      const i = parseInt(row.dataset.i);
+      DATA.buildings[bIdx][type][i].pct = Math.max(0, Math.min(100, parseInt(row.querySelector('.num-i').value) || 0));
+    } else {
+      const arr = row.dataset.arr; 
+      const i = parseInt(row.dataset.i);
+      if(row.classList.contains('qty-tracked')){
+        const total = parseFloat(row.dataset.total) || 0;
+        const done = Math.max(0, parseFloat(row.querySelector('.done-i').value) || 0);
+        DATA[arr][i].done = done;
+        DATA[arr][i].pct = total > 0 ? Math.round(Math.min(100, (done/total)*100)) : 0;
+      } else {
+        DATA[arr][i].pct = Math.max(0, Math.min(100, parseInt(row.querySelector('.num-i').value) || 0));
+      }
+    }
+  });
+  renderAll(); closeModal(); persistData();
+}
+
+function openQtyModal(){
+  renderQtyModalBody();
+  document.getElementById("qtyModalOverlay").classList.add("open");
+}
+
+function renderQtyModalBody(){
+  const body = document.getElementById("qtyModalBody");
+  let html = `
+    <div class="modal-section-label" style="font-size:0.9rem; color:var(--accent);">🏢 Gestion & Personnalisation des Bâtiments</div>
+    <div class="qty-note">Gérez vos bâtiments pour la Zone Centre Phase 1. Personnalisez leurs tâches spécifiques de Génie Civil et Postes.</div>
+  `;
+
+  DATA.buildings.forEach((b, bIdx) => {
+    html += `
+      <div class="building-config-card">
+        <div class="building-config-header">
+          <input type="text" value="${esc(b.name)}" onchange="updateBuildingName(${bIdx}, this.value)">
+          <button class="btn del" onclick="deleteBuilding(${bIdx})">🗑️ Supprimer</button>
+        </div>
+        
+        <div style="font-size:0.75rem; font-weight:700; color:var(--muted); margin-top:6px;">Tâches Génie Civil :</div>
+        <div class="task-tag-list">
+          ${b.genie.map((t, tIdx) => `
+            <span class="task-tag">${esc(t.name)} <span class="del-task" onclick="deleteTask(${bIdx}, 'genie', ${tIdx})">×</span></span>
+          `).join("")}
+        </div>
+        <div class="add-task-row">
+          <input type="text" id="newGenieTask_${bIdx}" placeholder="+ Ajouter une tâche Génie Civil..." onkeydown="if(event.key==='Enter'){addNewTask(${bIdx}, 'genie');}">
+          <button class="btn add" onclick="addNewTask(${bIdx}, 'genie')">+</button>
+        </div>
+
+        <div style="font-size:0.75rem; font-weight:700; color:var(--muted); margin-top:10px;">Tâches Équipements / Postes :</div>
+        <div class="task-tag-list">
+          ${b.poste.map((t, tIdx) => `
+            <span class="task-tag">${esc(t.name)} <span class="del-task" onclick="deleteTask(${bIdx}, 'poste', ${tIdx})">×</span></span>
+          `).join("")}
+        </div>
+        <div class="add-task-row">
+          <input type="text" id="newPosteTask_${bIdx}" placeholder="+ Ajouter une tâche Équipement..." onkeydown="if(event.key==='Enter'){addNewTask(${bIdx}, 'poste');}">
+          <button class="btn add" onclick="addNewTask(${bIdx}, 'poste')">+</button>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+    <div style="display:flex; gap:8px; margin: 12px 0 24px;">
+      <input type="text" id="newBuildingName" placeholder="Nom du nouveau bâtiment..." style="flex:1; padding:8px; border:1px solid var(--grid); border-radius:4px; font-size:0.85rem;">
+      <button class="btn" style="background:var(--accent); color:#fff;" onclick="addNewBuilding()">+ Ajouter Bâtiment</button>
+    </div>
+  `;
+
+  html += `<div class="modal-section-label" style="font-size:0.9rem; color:var(--accent);">⚖️ Quantités Totales Prévues (Pondération)</div>`;
+  html += '<div class="qty-row qty-row-head"><span>Tâche</span><span>Qté totale prévue</span><span>Unité</span></div>';
+  html += '<div class="modal-section-label">2. Artères de câbles</div>' + DATA.arteres.map((r,i)=> qtyFieldRow("arteres", i, r)).join("");
+  html += '<div class="modal-section-label">3. Massifs</div>' + DATA.massifs.map((r,i)=> qtyFieldRow("massifs", i, r)).join("");
+  html += '<div class="modal-section-label">4. Mâts, Potences et Portiques</div>' + DATA.mats.map((r,i)=> qtyFieldRow("mats", i, r)).join("");
+
+  body.innerHTML = html;
+}
+
+function updateBuildingName(bIdx, val){
+  const name = val.trim();
+  if(name) DATA.buildings[bIdx].name = name;
+}
+
+function addNewBuilding(){
+  const input = document.getElementById("newBuildingName");
+  const name = input.value.trim();
+  if(!name){ alert("Veuillez renseigner le nom du bâtiment."); return; }
+  
+  DATA.buildings.push({
+    id: "bldg_" + Date.now(),
+    name: name,
+    genie: DEFAULT_GENIE_TASKS.map(t => ({ name: t, pct: 0 })),
+    poste: DEFAULT_POSTE_TASKS.map(t => ({ name: t, pct: 0 }))
+  });
+  renderQtyModalBody();
+}
+
+function deleteBuilding(bIdx){
+  if(DATA.buildings.length <= 1){
+    alert("Vous devez conserver au minimum un bâtiment.");
+    return;
+  }
+  if(confirm(`Voulez-vous vraiment supprimer le bâtiment "${DATA.buildings[bIdx].name}" ?`)){
+    DATA.buildings.splice(bIdx, 1);
+    renderQtyModalBody();
+  }
+}
+
+function addNewTask(bIdx, type){
+  const input = document.getElementById(type === 'genie' ? `newGenieTask_${bIdx}` : `newPosteTask_${bIdx}`);
+  const taskName = input.value.trim();
+  if(!taskName) return;
+  DATA.buildings[bIdx][type].push({ name: taskName, pct: 0 });
+  renderQtyModalBody();
+}
+
+function deleteTask(bIdx, type, tIdx){
+  DATA.buildings[bIdx][type].splice(tIdx, 1);
+  renderQtyModalBody();
+}
+
+function qtyFieldRow(arr, i, item){
+  return `
+    <div class="qty-row" data-arr="${arr}" data-i="${i}">
+      <span style="font-size:0.82rem;">${esc(item.name)}</span>
+      <input type="number" class="qty-i" min="0" step="any" value="${item.qty ?? 0}">
+      <input type="text" class="unit-i" maxlength="8" value="${esc(item.unit || 'u')}">
+    </div>`;
+}
+
+function closeQtyModal(){ document.getElementById("qtyModalOverlay").classList.remove("open"); }
+
+function saveQtyModal(){
+  document.getElementById("qtyModalBody").querySelectorAll(".qty-row[data-arr]").forEach(row=>{
+    const arr = row.dataset.arr; 
+    const i = parseInt(row.dataset.i);
+    const q = parseFloat(row.querySelector('.qty-i').value);
+    DATA[arr][i].qty = (isNaN(q) || q < 0) ? 0 : q;
+    DATA[arr][i].unit = row.querySelector('.unit-i').value.trim() || 'u';
+    const total = DATA[arr][i].qty;
+    const done = DATA[arr][i].done || 0;
+    DATA[arr][i].pct = total > 0 ? Math.round(Math.min(100, (done/total)*100)) : 0;
+  });
+  renderAll(); 
+  closeQtyModal();
+  persistData();
+}
+
+function persistData(){
+  localStorage.setItem("zone_centre_p1_data_v2", JSON.stringify(DATA));
+  const statusEl = document.getElementById("saveStatus");
+  if(auth.currentUser){
+    statusEl.textContent = "⏳ Sauvegarde...";
+    statusEl.style.display = "inline";
+    db.ref(REMOTE_PATH).set(DATA)
+      .then(()=>{ statusEl.textContent = "✓ Sauvegardé en ligne"; })
+      .catch((err)=>{
+        console.error('Erreur de sauvegarde Firebase :', err);
+        statusEl.textContent = "⚠ Sauvegardé en local seulement";
+      })
+      .finally(()=>{ setTimeout(()=> { statusEl.style.display = "none"; }, 2000); });
+  } else {
+    statusEl.textContent = "✓ Sauvegardé (local)";
+    statusEl.style.display = "inline";
+    setTimeout(()=> { statusEl.style.display = "none"; }, 1500);
+  }
+}
+
+function loadData(){
+  const s = localStorage.getItem("zone_centre_p1_data_v2") || localStorage.getItem("zone_centre_p1_data_v1");
+  if(s) { 
+    try { migrateAndApply(JSON.parse(s)); } catch(e){ console.error(e); }
+  }
+}
+
+async function exportExcel() {
+  const btn = document.getElementById("excelBtn");
+  if(btn) { btn.disabled = true; btn.textContent = "Génération Excel..."; }
+
+  try {
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'Zone Centre Phase 1';
+    workbook.created = new Date();
+
+    const kpiBat = DATA.buildings.length ? DATA.buildings.reduce((acc, b) => acc + avg(b.genie), 0) / DATA.buildings.length : 0;
+    const kpiArt = wavg(DATA.arteres);
+    const kpiMas = wavg(DATA.massifs);
+    const kpiMats = wavg(DATA.mats);
+    const kpiCam = avg(DATA.campagne);
+    const kpiPoste = DATA.buildings.length ? DATA.buildings.reduce((acc, b) => acc + avg(b.poste), 0) / DATA.buildings.length : 0;
+    const totGlobal = (kpiBat + kpiArt + kpiMas + kpiMats + kpiCam + kpiPoste) / 6;
+
+    const ws1 = workbook.addWorksheet('📊 Synthèse & Dashboard', { views: [{ showGridLines: true }] });
+
+    const navyFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1A365D' } };
+    const orangeFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDD6B20' } };
+    const lightFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF4F6F9' } };
+    const cardFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFFFF' } };
+    const thinBorder = {
+      top: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+      left: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+      bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+      right: { style: 'thin', color: { argb: 'FFE2E8F0' } }
+    };
+
+    ws1.columns = [
+      { width: 4 },  { width: 30 }, { width: 34 }, { width: 16 }, { width: 16 }, { width: 18 }, { width: 18 }, { width: 4 }
+    ];
+
+    ws1.mergeCells('B2:G2');
+    const titleCell = ws1.getCell('B2');
+    titleCell.value = "RAPPORT D'AVANCEMENT GLOBAL — ZONE CENTRE PHASE 1 (ZEN-MOH-MAN-BEN-SKH)";
+    titleCell.font = { name: 'Segoe UI', size: 13, bold: true, color: { argb: 'FF1A365D' } };
+    titleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+    ws1.mergeCells('B3:G3');
+    const subCell = ws1.getCell('B3');
+    const nowStr = new Date().toLocaleString('fr-FR');
+    subCell.value = `Signalisation Ferroviaire & Génie Civil  |  CR SIG Marché C507 ONCF - ALSTOM  |  Exporté le : ${nowStr}`;
+    subCell.font = { name: 'Segoe UI', size: 9, italic: true, color: { argb: 'FF718096' } };
+
+    ws1.mergeCells('B5:C5');
+    const gHead = ws1.getCell('B5');
+    gHead.value = "AVANCEMENT GLOBAL";
+    gHead.fill = orangeFill;
+    gHead.font = { name: 'Segoe UI', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+    gHead.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    ws1.mergeCells('B6:C9');
+    const gVal = ws1.getCell('B6');
+    gVal.value = Math.round(totGlobal) / 100;
+    gVal.numberFormat = '0%';
+    gVal.fill = navyFill;
+    gVal.font = { name: 'Segoe UI', size: 32, bold: true, color: { argb: 'FFFFFFFF' } };
+    gVal.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    ws1.mergeCells('B10:C10');
+    const gStat = ws1.getCell('B10');
+    let phaseText = "Phase : Travaux Sol & Câblage";
+    if(totGlobal >= 85) phaseText = "Phase : Finitions & Essais";
+    else if(totGlobal < 20) phaseText = "Phase : Démarrage & Piquetage";
+    gStat.value = phaseText;
+    gStat.fill = navyFill;
+    gStat.font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: 'FFDD6B20' } };
+    gStat.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    const kpiCards = [
+      { posHead: 'D5:E5', posVal: 'D6:E7', label: '1. BÂTIMENTS GC', val: kpiBat },
+      { posHead: 'F5:G5', posVal: 'F6:G7', label: '2. ARTÈRES ⚖️', val: kpiArt },
+      { posHead: 'D8:E8', posVal: 'D9:E10', label: '3. MASSIFS ⚖️', val: kpiMas },
+      { posHead: 'F8:G8', posVal: 'F9:G10', label: '4. MÂTS & PORT. ⚖️', val: kpiMats },
+      { posHead: 'D11:E11', posVal: 'D12:E13', label: '5. CAMPAGNE', val: kpiCam },
+      { posHead: 'F11:G11', posVal: 'F12:G13', label: '6. POSTES TECH.', val: kpiPoste }
+    ];
+
+    kpiCards.forEach(card => {
+      ws1.mergeCells(card.posHead);
+      const hCell = ws1.getCell(card.posHead.split(':')[0]);
+      hCell.value = card.label;
+      hCell.fill = navyFill;
+      hCell.font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: 'FFFFFFFF' } };
+      hCell.alignment = { horizontal: 'center', vertical: 'middle' };
+
+      ws1.mergeCells(card.posVal);
+      const vCell = ws1.getCell(card.posVal.split(':')[0]);
+      vCell.value = Math.round(card.val) / 100;
+      vCell.numberFormat = '0.0%';
+      vCell.fill = cardFill;
+      vCell.font = { name: 'Segoe UI', size: 18, bold: true, color: { argb: 'FF1A365D' } };
+      vCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      vCell.border = thinBorder;
+    });
+
+    ws1.mergeCells('B15:G15');
+    const tblTitle = ws1.getCell('B15');
+    tblTitle.value = "RÉCAPITULATIF EXÉCUTIF DES LOTS & AXES";
+    tblTitle.font = { name: 'Segoe UI', size: 11, bold: true, color: { argb: 'FF1A365D' } };
+
+    const headers1 = ["AXE / LOT", "PÉRIMÈTRE COUVERT", "QTÉ TOTALE", "QTÉ RÉALISÉE", "AVANCEMENT %", "STATUT"];
+    const colKeys = ['B', 'C', 'D', 'E', 'F', 'G'];
+    colKeys.forEach((colKey, idx) => {
+      const cell = ws1.getCell(`${colKey}16`);
+      cell.value = headers1[idx];
+      cell.fill = navyFill;
+      cell.font = { name: 'Segoe UI', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.alignment = { horizontal: (idx >= 2 && idx <= 4) ? 'right' : (idx === 5 ? 'center' : 'left'), vertical: 'middle' };
+      cell.border = thinBorder;
+    });
+    ws1.getRow(16).height = 24;
+
+    const totalArtQty = DATA.arteres.reduce((s, x) => s + (parseFloat(x.qty) || 0), 0);
+    const doneArtQty = DATA.arteres.reduce((s, x) => s + (parseFloat(x.done) || 0), 0);
+    const totalMasQty = DATA.massifs.reduce((s, x) => s + (parseFloat(x.qty) || 0), 0);
+    const doneMasQty = DATA.massifs.reduce((s, x) => s + (parseFloat(x.done) || 0), 0);
+    const totalMatsQty = DATA.mats.reduce((s, x) => s + (parseFloat(x.qty) || 0), 0);
+    const doneMatsQty = DATA.mats.reduce((s, x) => s + (parseFloat(x.done) || 0), 0);
+
+    const bldgNames = DATA.buildings.map(b => b.name).join(', ');
+
+    const tableData = [
+      { axe: "1. Bâtiments (Génie Civil)", perim: bldgNames, qTot: "-", qReal: "-", pct: Math.round(kpiBat)/100 },
+      { axe: "2. Artères de câbles", perim: "Tranchées, Buses, Câbles, FO", qTot: `${totalArtQty} ml`, qReal: `${doneArtQty} ml`, pct: Math.round(kpiArt)/100 },
+      { axe: "3. Massifs de signalisation", perim: "Piquetage, Ferraillage, Béton", qTot: `${totalMasQty} u`, qReal: `${doneMasQty} u`, pct: Math.round(kpiMas)/100 },
+      { axe: "4. Mâts, Potences & Portiques", perim: "Structures de support signaux", qTot: `${totalMatsQty} u`, qReal: `${doneMatsQty} u`, pct: Math.round(kpiMats)/100 },
+      { axe: "5. Campagne (Installations Sol)", perim: "Moteurs, Balises, Pédales, Signaux", qTot: "-", qReal: "-", pct: Math.round(kpiCam)/100 },
+      { axe: "6. Postes Techniques", perim: `Équipements intérieurs (${bldgNames})`, qTot: "-", qReal: "-", pct: Math.round(kpiPoste)/100 }
+    ];
+
+    tableData.forEach((row, rIdx) => {
+      const rowNum = 17 + rIdx;
+      ws1.getRow(rowNum).height = 20;
+      const isEven = rIdx % 2 === 0;
+      const rowFill = isEven ? cardFill : lightFill;
+
+      const cAxe = ws1.getCell(`B${rowNum}`);
+      cAxe.value = row.axe; cAxe.font = { name: 'Segoe UI', size: 9, bold: true }; cAxe.fill = rowFill; cAxe.border = thinBorder;
+
+      const cPerim = ws1.getCell(`C${rowNum}`);
+      cPerim.value = row.perim; cPerim.font = { name: 'Segoe UI', size: 9 }; cPerim.fill = rowFill; cPerim.border = thinBorder;
+
+      const cQTot = ws1.getCell(`D${rowNum}`);
+      cQTot.value = row.qTot; cQTot.alignment = { horizontal: 'right' }; cQTot.font = { name: 'Segoe UI', size: 9 }; cQTot.fill = rowFill; cQTot.border = thinBorder;
+
+      const cQReal = ws1.getCell(`E${rowNum}`);
+      cQReal.value = row.qReal; cQReal.alignment = { horizontal: 'right' }; cQReal.font = { name: 'Segoe UI', size: 9 }; cQReal.fill = rowFill; cQReal.border = thinBorder;
+
+      const cPct = ws1.getCell(`F${rowNum}`);
+      cPct.value = row.pct; cPct.numberFormat = '0.0%'; cPct.alignment = { horizontal: 'right' }; cPct.font = { name: 'Segoe UI', size: 10, bold: true, color: { argb: 'FF1A365D' } }; cPct.fill = rowFill; cPct.border = thinBorder;
+
+      const cStat = ws1.getCell(`G${rowNum}`);
+      let statusStr = "Non démarré";
+      let statusColor = 'FF718096';
+      if(row.pct >= 1) { statusStr = "Terminé"; statusColor = 'FF2E7D32'; }
+      else if(row.pct > 0.5) { statusStr = "En cours (Avancé)"; statusColor = 'FFDD6B20'; }
+      else if(row.pct > 0) { statusStr = "En cours"; statusColor = 'FF2B6CB0'; }
+
+      cStat.value = statusStr; cStat.alignment = { horizontal: 'center' }; cStat.font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: statusColor } }; cStat.fill = rowFill; cStat.border = thinBorder;
+    });
+
+    const ws2 = workbook.addWorksheet('🏗️ Détail Avancement', { views: [{ showGridLines: true }] });
+    ws2.columns = [
+      { width: 25 }, { width: 35 }, { width: 14 }, { width: 10 }, { width: 14 }, { width: 16 }, { width: 18 }
+    ];
+
+    let currR = 2;
+
+    function addSectionHeaderTab2(title) {
+      ws2.mergeCells(`A${currR}:G${currR}`);
+      const c = ws2.getCell(`A${currR}`);
+      c.value = title;
+      c.fill = navyFill;
+      c.font = { name: 'Segoe UI', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+      c.alignment = { vertical: 'middle', horizontal: 'left' };
+      ws2.getRow(currR).height = 24;
+      currR++;
+
+      const subHeads = ["PÉRIMÈTRE / SITE", "DÉSIGNATION DE LA TÂCHE", "QTÉ PRÉVUE", "UNITÉ", "QTÉ RÉALISÉE", "AVANCEMENT %", "STATUT"];
+      const colL = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+      colL.forEach((cl, idx) => {
+        const sc = ws2.getCell(`${cl}${currR}`);
+        sc.value = subHeads[idx];
+        sc.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE2E8F0' } };
+        sc.font = { name: 'Segoe UI', size: 9, bold: true, color: { argb: 'FF1A365D' } };
+        sc.alignment = { horizontal: (idx >= 2 && idx <= 5) ? 'right' : (idx === 6 ? 'center' : 'left'), vertical: 'middle' };
+        sc.border = thinBorder;
+      });
+      ws2.getRow(currR).height = 20;
+      currR++;
+    }
+
+    addSectionHeaderTab2("1. BÂTIMENTS (GÉNIE CIVIL)");
+    DATA.buildings.forEach(bldg => {
+      (bldg.genie || []).forEach((t) => {
+        ws2.getRow(currR).height = 18;
+        ws2.getCell(`A${currR}`).value = bldg.name;
+        ws2.getCell(`B${currR}`).value = t.name;
+        ws2.getCell(`C${currR}`).value = "-";
+        ws2.getCell(`D${currR}`).value = "-";
+        ws2.getCell(`E${currR}`).value = "-";
+
+        const pctCell = ws2.getCell(`F${currR}`);
+        pctCell.value = (t.pct || 0) / 100;
+        pctCell.numberFormat = '0%';
+        pctCell.alignment = { horizontal: 'right' };
+        pctCell.font = { name: 'Segoe UI', size: 9, bold: true };
+
+        const stCell = ws2.getCell(`G${currR}`);
+        stCell.value = t.pct === 100 ? "Terminé" : (t.pct > 0 ? "En cours" : "Non démarré");
+        stCell.alignment = { horizontal: 'center' };
+        stCell.font = { name: 'Segoe UI', size: 9, italic: true };
+
+        ['A','B','C','D','E','F','G'].forEach(cl => { ws2.getCell(`${cl}${currR}`).border = thinBorder; });
+        currR++;
+      });
+    });
+
+    currR += 2;
+
+    const qtySections = [
+      { title: "2. ARTÈRES DE CÂBLES", key: "arteres" },
+      { title: "3. MASSIFS DE SIGNALISATION", key: "massifs" },
+      { title: "4. MÂTS, POTENCES ET PORTIQUES", key: "mats" }
+    ];
+
+    qtySections.forEach(sec => {
+      addSectionHeaderTab2(sec.title);
+      (DATA[sec.key] || []).forEach(row => {
+        ws2.getRow(currR).height = 18;
+        ws2.getCell(`A${currR}`).value = sec.title.split('.')[1].trim();
+        ws2.getCell(`B${currR}`).value = row.name;
+
+        const qPrevueCell = ws2.getCell(`C${currR}`);
+        qPrevueCell.value = parseFloat(row.qty) || 0;
+        qPrevueCell.numberFormat = '#,##0.00';
+        qPrevueCell.alignment = { horizontal: 'right' };
+
+        ws2.getCell(`D${currR}`).value = row.unit || 'u';
+        ws2.getCell(`D${currR}`).alignment = { horizontal: 'center' };
+
+        const qRealCell = ws2.getCell(`E${currR}`);
+        qRealCell.value = parseFloat(row.done) || 0;
+        qRealCell.numberFormat = '#,##0.00';
+        qRealCell.alignment = { horizontal: 'right' };
+
+        const pctCell = ws2.getCell(`F${currR}`);
+        pctCell.value = { formula: `IF(C${currR}>0, MIN(1, E${currR}/C${currR}), 0)`, result: (row.pct||0)/100 };
+        pctCell.numberFormat = '0.0%';
+        pctCell.alignment = { horizontal: 'right' };
+        pctCell.font = { name: 'Segoe UI', size: 9, bold: true };
+
+        const stCell = ws2.getCell(`G${currR}`);
+        const p = row.pct || 0;
+        stCell.value = p === 100 ? "Terminé" : (p > 0 ? "En cours" : "Non démarré");
+        stCell.alignment = { horizontal: 'center' };
+
+        ['A','B','C','D','E','F','G'].forEach(cl => { ws2.getCell(`${cl}${currR}`).border = thinBorder; });
+        currR++;
+      });
+      currR += 2;
+    });
+
+    addSectionHeaderTab2("5. CAMPAGNE (INSTALLATIONS SOL)");
+    (DATA.campagne || []).forEach(t => {
+      ws2.getRow(currR).height = 18;
+      ws2.getCell(`A${currR}`).value = "Campagne (Sol)";
+      ws2.getCell(`B${currR}`).value = t.name;
+      ws2.getCell(`C${currR}`).value = "-";
+      ws2.getCell(`D${currR}`).value = "-";
+      ws2.getCell(`E${currR}`).value = "-";
+      const pctCell = ws2.getCell(`F${currR}`);
+      pctCell.value = (t.pct || 0) / 100;
+      pctCell.numberFormat = '0%';
+      pctCell.alignment = { horizontal: 'right' };
+      pctCell.font = { name: 'Segoe UI', size: 9, bold: true };
+      ws2.getCell(`G${currR}`).value = t.pct === 100 ? "Terminé" : (t.pct > 0 ? "En cours" : "Non démarré");
+      ws2.getCell(`G${currR}`).alignment = { horizontal: 'center' };
+      ['A','B','C','D','E','F','G'].forEach(cl => { ws2.getCell(`${cl}${currR}`).border = thinBorder; });
+      currR++;
+    });
+
+    currR += 2;
+
+    addSectionHeaderTab2("6. POSTES TECHNIQUES (ÉQUIPEMENTS INTÉRIEURS)");
+    DATA.buildings.forEach(bldg => {
+      (bldg.poste || []).forEach(t => {
+        ws2.getRow(currR).height = 18;
+        ws2.getCell(`A${currR}`).value = bldg.name;
+        ws2.getCell(`B${currR}`).value = t.name;
+        ws2.getCell(`C${currR}`).value = "-";
+        ws2.getCell(`D${currR}`).value = "-";
+        ws2.getCell(`E${currR}`).value = "-";
+        const pctCell = ws2.getCell(`F${currR}`);
+        pctCell.value = (t.pct || 0) / 100;
+        pctCell.numberFormat = '0%';
+        pctCell.alignment = { horizontal: 'right' };
+        pctCell.font = { name: 'Segoe UI', size: 9, bold: true };
+        ws2.getCell(`G${currR}`).value = t.pct === 100 ? "Terminé" : (t.pct > 0 ? "En cours" : "Non démarré");
+        ws2.getCell(`G${currR}`).alignment = { horizontal: 'center' };
+        ['A','B','C','D','E','F','G'].forEach(cl => { ws2.getCell(`${cl}${currR}`).border = thinBorder; });
+        currR++;
+      });
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    saveAs(blob, "Rapport_Avancement_Zone_Centre_Phase1.xlsx");
+
+  } catch (err) {
+    console.error("Erreur génération Excel:", err);
+    alert("Une erreur est survenue lors de la génération du fichier Excel.");
+  } finally {
+    if(btn) { btn.disabled = false; btn.textContent = "📊 Exporter Excel"; }
+  }
+}
+
+async function exportPPTX() {
+  const btn = document.getElementById("pptxBtn");
+  const origText = btn ? btn.textContent : "📊 Exporter en PowerPoint";
+  if(btn) { btn.disabled = true; btn.textContent = "Génération PPTX..."; }
+
+  try {
+    if (typeof PptxGenJS === "undefined") {
+      throw new Error("PptxGenJS n'a pas pu être chargé. Veuillez vérifier votre connexion internet.");
+    }
+
+    const pptx = new PptxGenJS();
+    pptx.layout = 'LAYOUT_16x9';
+
+    const getShape = (type) => {
+      if (pptx && pptx.ShapeType && pptx.ShapeType[type]) return pptx.ShapeType[type];
+      if (typeof PptxGenJS !== "undefined" && PptxGenJS.ShapeType && PptxGenJS.ShapeType[type]) return PptxGenJS.ShapeType[type];
+      if (pptx && pptx.shapes) {
+        if (type === 'rect' && (pptx.shapes.RECT || pptx.shapes.RECTANGLE)) return pptx.shapes.RECT || pptx.shapes.RECTANGLE;
+        if (type === 'roundRect' && (pptx.shapes.ROUNDED_RECTANGLE || pptx.shapes.ROUND_RECT)) return pptx.shapes.ROUNDED_RECTANGLE || pptx.shapes.ROUND_RECT;
+        if (type === 'oval' && pptx.shapes.OVAL) return pptx.shapes.OVAL;
+        if (type === 'line' && pptx.shapes.LINE) return pptx.shapes.LINE;
+      }
+      return type;
+    };
+
+    const S = 13.3333 / 794; 
+    const font = "Segoe UI";
+
+    function addCommonHeader(slide, titleSuffix) {
+      slide.background = { color: "F4F6F9" };
+      slide.addShape(getShape('rect'), { x: 24 * S, y: 56 * S, w: (794 - 48) * S, h: 3 * S, fill: { color: "1A365D" }, line: { color: "1A365D", width: 0 } });
+      slide.addText([
+        { text: "RAPPORT D'AVANCEMENT ", options: { fontFace: font, fontSize: 13, bold: true, color: "1A365D" } },
+        { text: String(titleSuffix || "· ZONE CENTRE PHASE 1"), options: { fontFace: font, fontSize: 13, bold: true, color: "DD6B20" } },
+        { text: "\nCR SIG Marché C507 ONCF - ALSTOM", options: { fontFace: font, fontSize: 8.5, bold: true, italic: true, color: "1A365D" } }
+      ], { x: 24 * S, y: 10 * S, w: 580 * S, h: 44 * S, margin: 0, valign: "bottom" });
+      
+      slide.addShape(getShape('roundRect'), { x: 630 * S, y: 18 * S, w: 140 * S, h: 26 * S, rectRadius: 0.05, fill: { color: "DD6B20" }, line: { color: "DD6B20", width: 0 } });
+      slide.addText("SIGNALISATION", { x: 630 * S, y: 18 * S, w: 140 * S, h: 26 * S, fontFace: font, fontSize: 9, bold: true, color: "FFFFFF", align: "center", valign: "middle", margin: 0 });
+    }
+
+    function addProgressRow(slide, name, pct, x, y, w, qtyInfo, rowHeight = 10) {
+      const nameW = 180 * S;
+      const pctW = 55 * S;
+      const trackW = w - nameW - pctW - (10 * S);
+      
+      const safeName = String(name || '');
+      const safePct = Math.round(Number(pct) || 0);
+
+      slide.addText(safeName, { x: x, y: y, w: nameW, h: rowHeight * S, fontFace: font, fontSize: 7, color: "4A5568", margin: 0, valign: "middle" });
+      slide.addShape(getShape('roundRect'), { x: x + nameW, y: y + (1.5 * S), w: trackW, h: (rowHeight - 3) * S, rectRadius: 0.05, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+      if (safePct > 0) {
+        const fillW = Math.max(trackW * (Math.min(100, safePct) / 100), 4 * S);
+        slide.addShape(getShape('roundRect'), { x: x + nameW, y: y + (1.5 * S), w: fillW, h: (rowHeight - 3) * S, rectRadius: 0.05, fill: { color: "48BB78" }, line: { color: "48BB78", width: 0 } });
+      }
+      
+      let pctStr = safePct + "%";
+      if(qtyInfo) {
+        pctStr += ` (${qtyInfo})`;
+      }
+      slide.addText(pctStr, { x: x + nameW + trackW + (4 * S), y: y, w: pctW, h: rowHeight * S, fontFace: font, fontSize: 6.5, bold: true, color: "718096", align: "right", margin: 0, valign: "middle" });
+    }
+
+    // SLIDE 1: Synthèse Générale & KPIs
+    const slide1 = pptx.addSlide();
+    addCommonHeader(slide1, "· ZONE CENTRE PHASE 1");
+
+    slide1.addShape(getShape('roundRect'), { x: 24 * S, y: 68 * S, w: (794 - 48) * S, h: 80 * S, rectRadius: 0.05, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
+    slide1.addShape(getShape('rect'), { x: 24 * S, y: 68 * S, w: 4 * S, h: 80 * S, fill: { color: "1A365D" }, line: { color: "1A365D", width: 0 } });
+    
+    slide1.addShape(getShape('oval'), { x: 44 * S, y: 76 * S, w: 64 * S, h: 64 * S, fill: { color: "FFFFFF" }, line: { color: "DD6B20", width: 5 } });
+    const totPct = String(document.getElementById("globalPctNum").textContent || '0%');
+    slide1.addText([
+      { text: totPct + "\n", options: { fontFace: font, fontSize: 12, bold: true, color: "1A365D" } },
+      { text: "GLOBAL", options: { fontFace: font, fontSize: 5.5, bold: true, color: "718096" } }
+    ], { x: 44 * S, y: 76 * S, w: 64 * S, h: 64 * S, align: "center", valign: "middle", margin: 0 });
+
+    slide1.addText("SYNTHÈSE GÉNÉRALE", { x: 120 * S, y: 74 * S, w: 630 * S, h: 14 * S, fontFace: font, fontSize: 9.5, bold: true, color: "1A365D", margin: 0 });
+    
+    const rawSynthText = String(document.getElementById("syntheseText").innerText || document.getElementById("syntheseText").textContent || '');
+    slide1.addText(rawSynthText, { x: 120 * S, y: 90 * S, w: 630 * S, h: 54 * S, fontFace: font, fontSize: 7.5, color: "2D3748", margin: 0 });
+
+    const kpiBat = DATA.buildings.length ? DATA.buildings.reduce((acc, b) => acc + avg(b.genie), 0) / DATA.buildings.length : 0;
+    const kpiArt = wavg(DATA.arteres);
+    const kpiMas = wavg(DATA.massifs);
+    const kpiMats = wavg(DATA.mats);
+    const kpiCam = avg(DATA.campagne);
+    const kpiPoste = DATA.buildings.length ? DATA.buildings.reduce((acc, b) => acc + avg(b.poste), 0) / DATA.buildings.length : 0;
+
+    const kpiData = [
+      { lab: "1) BÂTIMENTS", val: kpiBat, col: "FF6B35" },
+      { lab: "2) ARTÈRES ⚖️", val: kpiArt, col: "2EC4B6" },
+      { lab: "3) MASSIFS ⚖️", val: kpiMas, col: "FFD166" },
+      { lab: "4) MÂTS & POT. ⚖️", val: kpiMats, col: "9B5DE5" },
+      { lab: "5) CAMPAGNE", val: kpiCam, col: "F54291" },
+      { lab: "6) POSTES (ÉQUIP)", val: kpiPoste, col: "4361EE" }
+    ];
+    const kpiW = 113 * S;
+    const kpiGap = 13.6 * S;
+    kpiData.forEach((k, idx) => {
+      const kX = (24 * S) + idx * (kpiW + kpiGap);
+      const kY = 156 * S;
+      const valNum = Math.round(Number(k.val) || 0);
+      slide1.addShape(getShape('roundRect'), { x: kX, y: kY, w: kpiW, h: 56 * S, rectRadius: 0.05, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
+      slide1.addShape(getShape('rect'), { x: kX, y: kY, w: kpiW, h: 3 * S, fill: { color: k.col }, line: { color: k.col, width: 0 } });
+      slide1.addText(k.lab, { x: kX + (6 * S), y: kY + (5 * S), w: kpiW - (12 * S), h: 10 * S, fontFace: font, fontSize: 5.5, bold: true, color: "718096", margin: 0 });
+      slide1.addText(valNum + "%", { x: kX + (6 * S), y: kY + (16 * S), w: kpiW - (12 * S), h: 20 * S, fontFace: font, fontSize: 13, bold: true, color: "1A365D", margin: 0 });
+      slide1.addShape(getShape('roundRect'), { x: kX + (6 * S), y: kY + (42 * S), w: kpiW - (12 * S), h: 4 * S, rectRadius: 0.05, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+      if (valNum > 0) {
+        slide1.addShape(getShape('roundRect'), { x: kX + (6 * S), y: kY + (42 * S), w: Math.max((kpiW - (12 * S)) * (valNum/100), 3 * S), h: 4 * S, rectRadius: 0.05, fill: { color: k.col }, line: { color: k.col, width: 0 } });
+      }
+    });
+
+    slide1.addText("RÉCAPITULATIF SYNTHÉTIQUE DES PARCS & AXES DE TRAVAUX", { x: 24 * S, y: 222 * S, w: (794 - 48) * S, h: 14 * S, fontFace: font, fontSize: 8.5, bold: true, color: "1A365D", margin: 0 });
+    slide1.addShape(getShape('rect'), { x: 24 * S, y: 238 * S, w: (794 - 48) * S, h: 1.5 * S, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+
+    const totalArtQty = DATA.arteres.reduce((s, x) => s + (parseFloat(x.qty) || 0), 0);
+    const doneArtQty = DATA.arteres.reduce((s, x) => s + (parseFloat(x.done) || 0), 0);
+    const totalMasQty = DATA.massifs.reduce((s, x) => s + (parseFloat(x.qty) || 0), 0);
+    const doneMasQty = DATA.massifs.reduce((s, x) => s + (parseFloat(x.done) || 0), 0);
+    const totalMatsQty = DATA.mats.reduce((s, x) => s + (parseFloat(x.qty) || 0), 0);
+    const doneMatsQty = DATA.mats.reduce((s, x) => s + (parseFloat(x.done) || 0), 0);
+    const bldgNames = DATA.buildings.map(b => b.name).join(', ');
+
+    const headerCells = ["AXE DE TRAVAUX", "PÉRIMÈTRE D'INTERVENTION", "QUANTITÉ TOTALE", "RÉALISÉ", "AVANCEMENT %"].map(t => ({
+      text: String(t),
+      options: { fontFace: font, fontSize: 7.5, bold: true, color: "FFFFFF", fill: "1A365D" }
+    }));
+
+    const rawRows = [
+      ["1. Bâtiments (Génie Civil)", `Génie Civil (${bldgNames})`, "-", "-", `${Math.round(kpiBat)}%`],
+      ["2. Artères de câbles", "Tranchées, buses, tirage de câbles CDTE/SIG/Énergie, FO", `${totalArtQty} ml`, `${doneArtQty} ml`, `${Math.round(kpiArt)}%`],
+      ["3. Massifs de signalisation", "Piquetage, ferraillage, coulage béton", `${totalMasQty} u`, `${doneMasQty} u`, `${Math.round(kpiMas)}%`],
+      ["4. Mâts, Potences & Portiques", "Structures de support signaux", `${totalMatsQty} u`, `${doneMatsQty} u`, `${Math.round(kpiMats)}%`],
+      ["5. Campagne (Installations Sol)", "Moteurs, balises, pédales, signaux, U71, CI", "-", "-", `${Math.round(kpiCam)}%`],
+      ["6. Postes Techniques", `Équipements intérieurs (${bldgNames})`, "-", "-", `${Math.round(kpiPoste)}%`]
+    ];
+
+    const tableRows = [headerCells];
+    rawRows.forEach((r, rowIdx) => {
+      const isEven = rowIdx % 2 === 0;
+      const rowFill = isEven ? "F4F6F9" : "FFFFFF";
+      tableRows.push(r.map(cellText => ({
+        text: String(cellText),
+        options: { fontFace: font, fontSize: 7.5, color: "2D3748", fill: rowFill }
+      })));
+    });
+
+    slide1.addTable(tableRows, {
+      x: 24 * S,
+      y: 246 * S,
+      w: (794 - 48) * S,
+      colW: [160 * S, 326 * S, 80 * S, 80 * S, 100 * S],
+      align: "left",
+      valign: "middle",
+      border: { pt: 0.5, color: "E2E8F0" }
+    });
+
+    // SLIDE 2+ : Bâtiments (Génie Civil)
+    for (let bIdx = 0; bIdx < DATA.buildings.length; bIdx += 2) {
+      const slideB = pptx.addSlide();
+      addCommonHeader(slideB, "· BÂTIMENTS (GÉNIE CIVIL)");
+
+      slideB.addText([
+        { text: "1. ", options: { bold: true, color: "DD6B20" } },
+        { text: `BÂTIMENTS (GÉNIE CIVIL) ${DATA.buildings.length > 2 ? `— PAGE ${Math.floor(bIdx/2) + 1}` : ''}`, options: { bold: true, color: "1A365D" } }
+      ], { x: 24 * S, y: 68 * S, w: 500 * S, h: 14 * S, fontFace: font, fontSize: 8.5, margin: 0 });
+      slideB.addShape(getShape('rect'), { x: 24 * S, y: 84 * S, w: (794 - 48) * S, h: 1.5 * S, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+
+      const pair = DATA.buildings.slice(bIdx, bIdx + 2);
+      const colW2 = pair.length > 1 ? 363 * S : (794 - 48) * S;
+
+      pair.forEach((b, idxInPair) => {
+        const bX = (24 + idxInPair * (363 + 20)) * S;
+        const bY = 90 * S;
+        const cardH = 330 * S;
+
+        slideB.addShape(getShape('roundRect'), { x: bX, y: bY, w: colW2, h: cardH, rectRadius: 0.05, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
+        slideB.addText(String(b.name).toUpperCase(), { x: bX + (10 * S), y: bY + (6 * S), w: colW2 - (60 * S), h: 14 * S, fontFace: font, fontSize: 8, bold: true, color: "2B6CB0", margin: 0 });
+        slideB.addText(Math.round(avg(b.genie)) + "%", { x: bX + colW2 - (50 * S), y: bY + (6 * S), w: 40 * S, h: 14 * S, fontFace: font, fontSize: 8, bold: true, color: "718096", align: "right", margin: 0 });
+        slideB.addShape(getShape('rect'), { x: bX + (10 * S), y: bY + (22 * S), w: colW2 - (20 * S), h: 1 * S, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+
+        const tasks = b.genie || [];
+        const taskRowH = Math.min(16, (cardH - 30 * S) / Math.max(tasks.length, 1) / S);
+        tasks.forEach((r, tIdx) => {
+          addProgressRow(slideB, r.name, r.pct, bX + (10 * S), bY + (26 + tIdx * taskRowH) * S, colW2 - (20 * S), null, taskRowH - 1);
+        });
+      });
+    }
+
+    // SLIDE INFRA : Artères, Massifs, Mâts
+    const slideInfra = pptx.addSlide();
+    addCommonHeader(slideInfra, "· ARTÈRES, MASSIFS & MÂTS");
+
+    slideInfra.addText([
+      { text: "2. ", options: { bold: true, color: "DD6B20" } },
+      { text: "ARTÈRES DE CÂBLES", options: { bold: true, color: "1A365D" } }
+    ], { x: 24 * S, y: 68 * S, w: 400 * S, h: 14 * S, fontFace: font, fontSize: 8.5, margin: 0 });
+    slideInfra.addShape(getShape('rect'), { x: 24 * S, y: 84 * S, w: (794 - 48) * S, h: 1.5 * S, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+    
+    slideInfra.addShape(getShape('roundRect'), { x: 24 * S, y: 90 * S, w: (794 - 48) * S, h: 145 * S, rectRadius: 0.05, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
+    DATA.arteres.forEach((r, idx) => {
+      const qInfo = `${r.done ?? 0}/${r.qty} ${r.unit||'u'}`;
+      addProgressRow(slideInfra, r.name, r.pct, 34 * S, (95 + idx * 13.5) * S, (794 - 68) * S, qInfo, 12);
+    });
+
+    const colW3 = 363 * S;
+    slideInfra.addText([
+      { text: "3. ", options: { bold: true, color: "DD6B20" } },
+      { text: "MASSIFS", options: { bold: true, color: "1A365D" } }
+    ], { x: 24 * S, y: 245 * S, w: colW3, h: 14 * S, fontFace: font, fontSize: 8.5, margin: 0 });
+    slideInfra.addShape(getShape('rect'), { x: 24 * S, y: 261 * S, w: colW3, h: 1.5 * S, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+    
+    slideInfra.addShape(getShape('roundRect'), { x: 24 * S, y: 267 * S, w: colW3, h: 140 * S, rectRadius: 0.05, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
+    DATA.massifs.forEach((r, idx) => {
+      const qInfo = `${r.done ?? 0}/${r.qty} ${r.unit||'u'}`;
+      addProgressRow(slideInfra, r.name, r.pct, 34 * S, (275 + idx * 30) * S, colW3 - (20 * S), qInfo, 18);
+    });
+
+    slideInfra.addText([
+      { text: "4. ", options: { bold: true, color: "DD6B20" } },
+      { text: "MÂTS, POTENCES ET PORTIQUES", options: { bold: true, color: "1A365D" } }
+    ], { x: (44 + 363) * S, y: 245 * S, w: colW3, h: 14 * S, fontFace: font, fontSize: 8.5, margin: 0 });
+    slideInfra.addShape(getShape('rect'), { x: (44 + 363) * S, y: 261 * S, w: colW3, h: 1.5 * S, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+    
+    slideInfra.addShape(getShape('roundRect'), { x: (44 + 363) * S, y: 267 * S, w: colW3, h: 140 * S, rectRadius: 0.05, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
+    DATA.mats.forEach((r, idx) => {
+      const qInfo = `${r.done ?? 0}/${r.qty} ${r.unit||'u'}`;
+      addProgressRow(slideInfra, r.name, r.pct, (44 + 363) * S, (275 + idx * 38) * S, colW3 - (20 * S), qInfo, 22);
+    });
+
+    // SLIDE EQUIP : Campagne & Postes
+    for (let pIdx = 0; pIdx < DATA.buildings.length; pIdx += 2) {
+      const slideEquip = pptx.addSlide();
+      addCommonHeader(slideEquip, "· CAMPAGNE & POSTES TECHNIQUES");
+
+      if (pIdx === 0) {
+        slideEquip.addText([
+          { text: "5. ", options: { bold: true, color: "DD6B20" } },
+          { text: "CAMPAGNE (INSTALLATIONS SOL)", options: { bold: true, color: "1A365D" } }
+        ], { x: 24 * S, y: 68 * S, w: 400 * S, h: 14 * S, fontFace: font, fontSize: 8.5, margin: 0 });
+        slideEquip.addShape(getShape('rect'), { x: 24 * S, y: 84 * S, w: (794 - 48) * S, h: 1.5 * S, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+        
+        slideEquip.addShape(getShape('roundRect'), { x: 24 * S, y: 90 * S, w: (794 - 48) * S, h: 110 * S, rectRadius: 0.05, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
+        DATA.campagne.forEach((r, idx) => {
+          addProgressRow(slideEquip, r.name, r.pct, 34 * S, (96 + idx * 16) * S, (794 - 68) * S, null, 14);
+        });
+      }
+
+      const startYPoste = (pIdx === 0) ? 212 * S : 68 * S;
+      slideEquip.addText([
+        { text: "6. ", options: { bold: true, color: "DD6B20" } },
+        { text: `POSTES TECHNIQUE (ÉQUIPEMENTS INTÉRIEURS) ${DATA.buildings.length > 2 ? `— PAGE ${Math.floor(pIdx/2) + 1}` : ''}`, options: { bold: true, color: "1A365D" } }
+      ], { x: 24 * S, y: startYPoste, w: 500 * S, h: 14 * S, fontFace: font, fontSize: 8.5, margin: 0 });
+      slideEquip.addShape(getShape('rect'), { x: 24 * S, y: startYPoste + 16 * S, w: (794 - 48) * S, h: 1.5 * S, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+
+      const pairP = DATA.buildings.slice(pIdx, pIdx + 2);
+      const colW4 = pairP.length > 1 ? 363 * S : (794 - 48) * S;
+
+      pairP.forEach((b, idxInPair) => {
+        const bX = (24 + idxInPair * (363 + 20)) * S;
+        const bY = startYPoste + 22 * S;
+        const cardH = (pIdx === 0) ? 180 * S : 320 * S;
+
+        slideEquip.addShape(getShape('roundRect'), { x: bX, y: bY, w: colW4, h: cardH, rectRadius: 0.05, fill: { color: "FFFFFF" }, line: { color: "E2E8F0", width: 1 } });
+        slideEquip.addText(String(b.name).toUpperCase(), { x: bX + (10 * S), y: bY + (6 * S), w: colW4 - (60 * S), h: 14 * S, fontFace: font, fontSize: 8, bold: true, color: "2B6CB0", margin: 0 });
+        slideEquip.addText(Math.round(avg(b.poste)) + "%", { x: bX + colW4 - (50 * S), y: bY + (6 * S), w: 40 * S, h: 14 * S, fontFace: font, fontSize: 8, bold: true, color: "718096", align: "right", margin: 0 });
+        slideEquip.addShape(getShape('rect'), { x: bX + (10 * S), y: bY + (22 * S), w: colW4 - (20 * S), h: 1 * S, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+
+        const pTasks = b.poste || [];
+        const taskRowH = Math.min(22, (cardH - 30 * S) / Math.max(pTasks.length, 1) / S);
+        pTasks.forEach((r, tIdx) => {
+          addProgressRow(slideEquip, r.name, r.pct, bX + (10 * S), bY + (26 + tIdx * taskRowH) * S, colW4 - (20 * S), null, taskRowH - 2);
+        });
+      });
+    }
+
+    // SLIDE PHOTOS
+    const slidePhoto = pptx.addSlide();
+    addCommonHeader(slidePhoto, "· PHOTOS DU CHANTIER");
+
+    slidePhoto.addText([
+      { text: "7. ", options: { bold: true, color: "DD6B20" } },
+      { text: "PHOTOS DU CHANTIER (ZONE CENTRE PHASE 1)", options: { bold: true, color: "1A365D" } }
+    ], { x: 24 * S, y: 68 * S, w: (794 - 48) * S, h: 14 * S, fontFace: font, fontSize: 8.5, margin: 0 });
+    slidePhoto.addShape(getShape('rect'), { x: 24 * S, y: 84 * S, w: (794 - 48) * S, h: 1.5 * S, fill: { color: "E2E8F0" }, line: { color: "E2E8F0", width: 0 } });
+
+    const photoBoxes = [
+      { x: 24 * S, y: 94 * S, desc: "Vue d'ensemble — Bâtiment GS 15.8", label: "Emplacement Photo 1" },
+      { x: (44 + 363) * S, y: 94 * S, desc: "Travaux de Génie Civil — Bâtiment GS 17", label: "Emplacement Photo 2" },
+      { x: 24 * S, y: 240 * S, desc: "Artères de câbles & Confection des tranchées", label: "Emplacement Photo 3" },
+      { x: (44 + 363) * S, y: 240 * S, desc: "Pose et installation des équipements de Campagne", label: "Emplacement Photo 4" }
+    ];
+
+    const colW5 = 363 * S;
+    photoBoxes.forEach(p => {
+      slidePhoto.addShape(getShape('roundRect'), { x: p.x, y: p.y, w: colW5, h: 125 * S, rectRadius: 0.05, fill: { color: "FFFFFF" }, line: { color: "CBD5E0", width: 1.5, dashType: "dash" } });
+      slidePhoto.addText(p.label, { x: p.x, y: p.y + (48 * S), w: colW5, h: 16 * S, fontFace: font, fontSize: 9, bold: true, color: "A0AEC0", align: "center", margin: 0 });
+      slidePhoto.addText(p.desc, { x: p.x, y: p.y + (128 * S), w: colW5, h: 14 * S, fontFace: font, fontSize: 7.5, italic: true, color: "718096", align: "center", margin: 0 });
+    });
+
+    await pptx.writeFile({ fileName: "Rapport_Avancement_Zone_Centre_Phase1.pptx" });
+  } catch (error) {
+    console.error("Erreur durant l'exportation PowerPoint :", error);
+    alert("Erreur lors de la génération du fichier PowerPoint : " + error.message);
+  } finally {
+    if(btn) { btn.disabled = false; btn.textContent = origText; }
+  }
+}
+
+async function exportPDF() {
+  const btn = document.getElementById("pdfBtn");
+  btn.disabled = true;
+  btn.textContent = "Génération du PDF...";
+
+  document.querySelector(".topbar").style.display = "none";
+  document.querySelectorAll(".edit-btn").forEach(b => b.style.display = "none");
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const targetWidth = 800; 
+  const a4WidthMm = 210;
+  const a4HeightMm = 297;
+  const marginMm = 10;
+  const contentWidthMm = a4WidthMm - (marginMm * 2);
+
+  const units = [];
+
+  const headerWrapper = document.createElement("div");
+  headerWrapper.appendChild(document.getElementById("pdfHeader").cloneNode(true));
+  headerWrapper.appendChild(document.getElementById("pdfGlobalBlock").cloneNode(true));
+  headerWrapper.appendChild(document.getElementById("kpiGrid").cloneNode(true));
+  units.push(headerWrapper);
+
+  const s1Head = document.querySelector("#section1 .sectionhead").cloneNode(true);
+  s1Head.querySelectorAll(".edit-btn").forEach(b => b.remove());
+  units.push(s1Head);
+
+  const gcBlocks = Array.from(document.querySelectorAll("#buildings-genie-container .building-block"));
+  for (let i = 0; i < gcBlocks.length; i += 2) {
+    const rowWrap = document.createElement("div");
+    rowWrap.className = "pdf-two-col-row";
+    rowWrap.appendChild(gcBlocks[i].cloneNode(true));
+    if (gcBlocks[i + 1]) {
+      rowWrap.appendChild(gcBlocks[i + 1].cloneNode(true));
+    }
+    units.push(rowWrap);
+  }
+
+  const sec2 = document.getElementById("section2").cloneNode(true);
+  sec2.querySelectorAll(".edit-btn").forEach(b => b.remove());
+  units.push(sec2);
+
+  const sec34 = document.getElementById("section3and4").cloneNode(true);
+  sec34.querySelectorAll(".edit-btn").forEach(b => b.remove());
+  units.push(sec34);
+
+  const sec5 = document.getElementById("section5").cloneNode(true);
+  sec5.querySelectorAll(".edit-btn").forEach(b => b.remove());
+  units.push(sec5);
+
+  const s6Head = document.querySelector("#section6 .sectionhead").cloneNode(true);
+  s6Head.querySelectorAll(".edit-btn").forEach(b => b.remove());
+  units.push(s6Head);
+
+  const posteBlocks = Array.from(document.querySelectorAll("#buildings-poste-container .building-block"));
+  for (let i = 0; i < posteBlocks.length; i += 2) {
+    const rowWrap = document.createElement("div");
+    rowWrap.className = "pdf-two-col-row";
+    rowWrap.appendChild(posteBlocks[i].cloneNode(true));
+    if (posteBlocks[i + 1]) {
+      rowWrap.appendChild(posteBlocks[i + 1].cloneNode(true));
+    }
+    units.push(rowWrap);
+  }
+
+  units.push(document.getElementById("pdfFooter").cloneNode(true));
+
+  let currentCursorY = marginMm;
+
+  try {
+    for (let i = 0; i < units.length; i++) {
+      const unitEl = units[i];
+      
+      const tempContainer = document.createElement("div");
+      tempContainer.className = "pdf-capture-unit";
+      tempContainer.style.width = targetWidth + "px";
+      tempContainer.style.background = "#f4f6f9";
+      tempContainer.style.position = "fixed";
+      tempContainer.style.top = "-9999px";
+      tempContainer.style.left = "-9999px";
+      tempContainer.style.fontFamily = "'Segoe UI', sans-serif";
+
+      tempContainer.appendChild(unitEl);
+      document.body.appendChild(tempContainer);
+
+      const canvas = await html2canvas(tempContainer, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#f4f6f9",
+        windowWidth: targetWidth
+      });
+
+      document.body.removeChild(tempContainer);
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const imgHeightMm = (canvas.height * contentWidthMm) / canvas.width;
+
+      if (currentCursorY + imgHeightMm > a4HeightMm - marginMm && currentCursorY > marginMm) {
+        pdf.addPage();
+        currentCursorY = marginMm;
+      }
+
+      pdf.addImage(imgData, 'JPEG', marginMm, currentCursorY, contentWidthMm, imgHeightMm, undefined, 'FAST');
+      currentCursorY += imgHeightMm + 2.5;
+    }
+
+    pdf.addPage();
+    const photoContainer = document.createElement("div");
+    photoContainer.style.width = targetWidth + "px";
+    photoContainer.style.padding = "20px";
+    photoContainer.style.background = "#f4f6f9";
+    photoContainer.style.position = "fixed";
+    photoContainer.style.top = "-9999px";
+    photoContainer.style.left = "-9999px";
+    photoContainer.style.fontFamily = "'Segoe UI', sans-serif";
+
+    const photoClone = document.getElementById("photoSectionExport").cloneNode(true);
+    photoClone.style.display = "block";
+    photoContainer.appendChild(photoClone);
+    document.body.appendChild(photoContainer);
+
+    const photoCanvas = await html2canvas(photoContainer, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#f4f6f9",
+      windowWidth: targetWidth
+    });
+
+    document.body.removeChild(photoContainer);
+
+    const photoImgData = photoCanvas.toDataURL("image/jpeg", 0.95);
+    const photoHeightMm = (photoCanvas.height * a4WidthMm) / photoCanvas.width;
+    pdf.addImage(photoImgData, 'JPEG', 0, 0, a4WidthMm, photoHeightMm, undefined, 'FAST');
+
+    pdf.save("Rapport_Avancement_Zone_Centre_Phase1.pdf");
+
+  } catch (error) {
+    console.error("Erreur durant l'exportation du PDF :", error);
+  } finally {
+    document.querySelector(".topbar").style.display = "flex";
+    document.querySelectorAll(".edit-btn").forEach(b => b.style.display = "inline-flex");
+    btn.disabled = false;
+    btn.textContent = "📄 Exporter en PDF";
+  }
+}
+
+loadData(); 
+renderAll();
+</script>
+</body>
+</html>

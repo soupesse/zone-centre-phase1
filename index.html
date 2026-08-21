@@ -111,6 +111,47 @@
   .global-txt h2{font-size:1.15rem; font-weight:700; letter-spacing:-0.02em; margin-bottom:6px; color: var(--accent);}
   .global-txt p{color:var(--muted); line-height:1.6; font-size:0.92rem;}
 
+
+  /* ---------- Ligne synthèse + carte ---------- */
+  .global-row{
+    display:grid; grid-template-columns: 1.05fr 1fr; gap:16px; align-items:stretch;
+    margin-bottom:1.75rem;
+  }
+  .global-row > .global{ margin-bottom:0; }
+  .map-card{
+    background:var(--panel); border:1px solid rgba(0,0,0,0.05); border-radius:var(--r-lg);
+    box-shadow:var(--shadow-1); overflow:hidden; display:flex; flex-direction:column;
+    min-height:300px;
+  }
+  .map-head{
+    display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+    padding:16px 20px 12px;
+  }
+  .map-head h2{ font-size:1.05rem; font-weight:700; letter-spacing:-0.02em; color:var(--accent); }
+  .map-legend{ display:flex; gap:14px; flex-wrap:wrap; font-size:0.72rem; color:var(--muted); font-weight:500; }
+  .map-legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .map-legend .dot{ width:16px; height:3px; border-radius:2px; display:inline-block; }
+  .map-legend .dot-line{ background:#ff7a1a; }
+  .map-legend .dot-branch{ background:#0071e3; }
+  #railMap{ flex:1; min-height:260px; width:100%; background:#eef1f5; }
+  .map-foot{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:10px 16px; border-top:1px solid var(--grid);
+    font-size:0.68rem; color:var(--muted);
+  }
+  .leaflet-container{ font-family:inherit; border-radius:0; }
+  .rail-pin{
+    display:flex; align-items:center; justify-content:center;
+    width:26px; height:26px; border-radius:50%;
+    background:#fff; border:3px solid #ff7a1a; color:var(--accent);
+    font-size:0.66rem; font-weight:700; box-shadow:var(--shadow-1);
+  }
+  .rail-pin.branch{ border-color:#0071e3; }
+  .rail-tip b{ display:block; font-size:0.85rem; color:var(--accent); letter-spacing:-0.01em; }
+  .rail-tip small{ color:var(--muted); }
+  @media(max-width:900px){ .global-row{ grid-template-columns:1fr; } }
+  @media print{ .map-card{ display:none !important; } }
+
   /* ---------- Sections ---------- */
   section{margin-bottom:1.75rem;}
   section .sectionhead{
@@ -405,6 +446,7 @@
     <div class="badge">Signalisation</div>
   </header>
 
+  <div class="global-row">
   <div class="global" id="pdfGlobalBlock">
     <div class="ring">
       <svg width="110" height="110" viewBox="0 0 110 110">
@@ -421,6 +463,23 @@
       <h2>Synthèse Générale</h2>
       <p id="syntheseText">Chargement de la synthèse d'avancement par axe...</p>
     </div>
+  </div>
+
+  <!-- Carte du tracé ferroviaire (hors export PDF/PPTX) -->
+  <div class="map-card" id="railMapCard" data-html2canvas-ignore="true">
+    <div class="map-head">
+      <h2>Tracé de la ligne</h2>
+      <div class="map-legend">
+        <span><i class="dot dot-line"></i>Axe Zenata → Mansouria</span>
+        <span><i class="dot dot-branch"></i>Antenne Benslimane</span>
+      </div>
+    </div>
+    <div id="railMap"></div>
+    <div class="map-foot">
+      <span id="mapNote">Fond : OpenStreetMap · Voies : OpenRailwayMap</span>
+      <button type="button" class="edit-btn" onclick="fitRailMap()">Recadrer</button>
+    </div>
+  </div>
   </div>
 
   <div class="grid" id="kpiGrid">
@@ -528,6 +587,8 @@
   </div>
 </div>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -549,14 +610,12 @@ const firebaseConfig = {
   appId: "1:654914178815:web:39b519c510fc21fc5706ca"
 };
 if (typeof firebase === 'undefined') {
-  // Le SDK Firebase n'a pas pu être chargé (hors-ligne, CDN bloqué, ou page ouverte
-  // dans un aperçu sandboxé). On affiche un message clair au lieu de planter.
   document.addEventListener('DOMContentLoaded', function(){
     var err = document.getElementById('authError');
     var box = document.getElementById('authLoading');
+    var btn = document.getElementById('authSubmitBtn');
     if (err) err.textContent = "Impossible de charger Firebase. Vérifiez votre connexion Internet (gstatic.com doit être accessible), puis rechargez la page.";
     if (box) box.style.display = 'none';
-    var btn = document.getElementById('authSubmitBtn');
     if (btn) btn.disabled = true;
   });
   throw new Error("Firebase SDK non chargé — script interrompu proprement.");
@@ -596,6 +655,7 @@ auth.onAuthStateChanged(function(user){
     userBadge.textContent = '👤 ' + user.email;
     userBadge.style.display = 'inline';
     attachRemoteSync();
+    initRailMap();
   } else {
     authScreen.style.display = 'flex';
     userBadge.style.display = 'none';
@@ -621,6 +681,74 @@ function attachRemoteSync(){
     document.getElementById('saveStatus').style.display = 'inline';
   });
 }
+
+/* ============================================================
+   Carte du tracé ferroviaire — Leaflet + OpenStreetMap
+   Fond de plan OSM + calque OpenRailwayMap qui affiche les voies réelles.
+   Les repères utilisent les coordonnées relevées des gares/sites.
+   ============================================================ */
+const RAIL_STATIONS = [
+  { name:"Zenata",               sub:"Gare / techni-centre",      lat:33.659360, lng:-7.418764, branch:false },
+  { name:"Mohammedia",           sub:"Gare existante",            lat:33.695635, lng:-7.387760, branch:false },
+  { name:"Mohammedia Facultés",  sub:"Nouvelle gare TMP",         lat:33.706390, lng:-7.353344, branch:false },
+  { name:"El Mansouria",         sub:"Gare existante",            lat:33.737342, lng:-7.281050, branch:false },
+  { name:"Benslimane",           sub:"Nouvelle gare Grand Stade", lat:33.677667, lng:-7.274512, branch:true  }
+];
+
+let railMap = null, railGroup = null;
+
+function initRailMap(){
+  if(railMap || typeof L === 'undefined') return;
+  const el = document.getElementById('railMap');
+  if(!el) return;
+
+  railMap = L.map(el, { scrollWheelZoom:false, zoomControl:true, attributionControl:true });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(railMap);
+
+  // Calque des voies ferrées réelles
+  L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
+    maxZoom: 19, opacity: 0.85,
+    attribution: '&copy; OpenRailwayMap'
+  }).addTo(railMap);
+
+  railGroup = L.featureGroup().addTo(railMap);
+
+  const main   = RAIL_STATIONS.filter(s => !s.branch).map(s => [s.lat, s.lng]);
+  const branch = [
+    [RAIL_STATIONS[3].lat, RAIL_STATIONS[3].lng],
+    [RAIL_STATIONS[4].lat, RAIL_STATIONS[4].lng]
+  ];
+
+  L.polyline(main,   { color:'#ff7a1a', weight:5, opacity:0.9 }).addTo(railGroup);
+  L.polyline(branch, { color:'#0071e3', weight:4, opacity:0.9, dashArray:'8 7' }).addTo(railGroup);
+
+  RAIL_STATIONS.forEach((s, i) => {
+    const icon = L.divIcon({
+      className:'', iconSize:[26,26], iconAnchor:[13,13],
+      html:'<div class="rail-pin'+(s.branch?' branch':'')+'">'+(i+1)+'</div>'
+    });
+    L.marker([s.lat, s.lng], { icon:icon })
+      .bindPopup('<div class="rail-tip"><b>'+s.name+'</b><small>'+s.sub+'</small></div>')
+      .bindTooltip(s.name, { direction:'top', offset:[0,-14] })
+      .addTo(railGroup);
+  });
+
+  fitRailMap();
+  setTimeout(function(){ railMap.invalidateSize(); fitRailMap(); }, 300);
+}
+
+function fitRailMap(){
+  if(railMap && railGroup){
+    railMap.invalidateSize();
+    railMap.fitBounds(railGroup.getBounds(), { padding:[28,28] });
+  }
+}
+
+window.addEventListener('resize', function(){ if(railMap) railMap.invalidateSize(); });
 
 const DEFAULT_GENIE_TASKS = [
   "Installation et implantation", "Terrassement", "Béton de propreté", "Semelles BA",
